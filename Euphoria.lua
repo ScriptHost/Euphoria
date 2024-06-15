@@ -32,7 +32,7 @@
     userstded = menu.get_edition(user)
     userproot = menu.player_root(user)
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.2b"    
+    scriptver = "v1.3"    
 -- Lists
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
     scripthosting = ethmiscs:list("Script Host Options")
