@@ -29,7 +29,7 @@
     username = players.get_name(user)
     joaat, toast, yield, draw_debug_text, reverse_joaat = util.joaat, util.toast, util.yield, util.draw_debug_text, util.reverse_joaat
     textinput = menu.text_input
-    scriptver = "N/A"
+    scriptver = "v1.1"
 -- Lists
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
     scripthosting = ethmiscs:list("Script Host Options")
@@ -217,7 +217,7 @@
 
     -- Run at start of script
      -- Notification
-        util.show_corner_help("ScriptHostLocker took over Euphoria.\nWelcome "..username.." !")
+        util.show_corner_help("ScriptHostLocker took over Euphoria.\nWelcome "..username.." !\nCurrent Euphoria Version : "..scriptver..".\nLatest Euphoria Version : "..latesteuver..".")
      -- WHS
         local name = players.get_name(players.user())
         local RID = players.get_rockstar_id(players.user())
