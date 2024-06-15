@@ -1849,6 +1849,7 @@
         players.add_command_hook(player)
     kr()
 -- Credits
+    credits:hyperlink("Discord", "https://discord.gg/e9n67WfJ8y", "Join the official Euphoria discord.")
     credits:divider("Credits", "", function()
     end)
     credits:action("ScriptHostLocker", {}, "Its me :)", function()
