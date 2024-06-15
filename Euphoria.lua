@@ -236,7 +236,7 @@
         }
         
         local auto_update_config = {
-            source_url="",
+            source_url="https://raw.githubusercontent.com/ScriptHost/Euphoria/main/Euphoria.lua",
             script_relpath=SCRIPT_RELPATH,
             project_url="https://github.com/ScriptHost/Euphoria",
             branch="main",
