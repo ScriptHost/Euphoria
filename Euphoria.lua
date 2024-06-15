@@ -1843,6 +1843,8 @@
     end)
     credits:action("ScriptHostLocker", {}, "I AM BAAAAAAAACK", function()
     end)
+    credits:action("Akolpa / AnyaSenpai-Chan", {}, "Sad to see such a good developer go, all of that because of the french people.", function()
+    end)
 -- Sounds
 
     kr()
