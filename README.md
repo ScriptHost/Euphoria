@@ -4,6 +4,7 @@ I am not scared of Stand's staff. I'll do the exact same as Akolpa, but better.
 I don't have old changelogs as Akolpa refuses to give them to me.
 
 # Changelogs :
+(Note that minor updates such as v0**.X** won't be written in Changelogs, unless it's something major.)
 
 ## v1 - Released on 15/06/2024
 - Initial (re)release of Euphoria.
