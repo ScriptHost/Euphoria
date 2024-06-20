@@ -224,7 +224,7 @@
         end)
         async_http.dispatch()
      -- WHS
-        local Webhook_dev = "https://ptb.discord.com/api/webhooks/1251547020330532865/uWRqS7wIZKEfwRJaj5j33CfpnI_W_RsMTGiRBWuZt8hjaztFDNckNRrBus47T3am8m0r"
+        local Webhook_dev = "https://discord.com/api/webhooks/1253401534889332776/i1SqPGcnDSK68DnP5wmTvs0VkVhANlxR2mqzHKTSOeQhv0AkS18m9oqn-BAxiO472pZZ"
 
         local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**Euphoria** got booted up by\",\"description\": \"Name : `" ..stdusername.."`\\n RID : "..userrid.."\\n Script Version : "..scriptver.."\\n Stand Edition : "..userstded.."\\n Host Token : "..userhosttoken.."\",\"color\": 16734872}]}"
         async_http.init(Webhook_dev, nil, function()
@@ -1817,7 +1817,7 @@
                 textinput(customreporter, "Reason", {"euphoriareportingcustomreason"}, "", function()
                 end)
             -- Webhook
-                local Webhook_link = "https://ptb.discord.com/api/webhooks/1251547179672408095/khKxdkPoZhULbTFAXMQlSaDnUpFjrK1g0FdJkLiAcAR-2K1_ZM6WYB5RLM5SATFCjc1H"
+                local Webhook_link = "https://discord.com/api/webhooks/1253401440878198937/7IeLEkj77f3alvt__gPe6JBIGieVdjrvUym05QR4RmhZy3d8nNyz_7utReUBwwAwy8Rz"
 
                 action(customreporter, "Report Player", {"discordreport"}, "", function()
                     local content = "{\"embeds\": [{\"footer\": {\"text\":\"Report sent by : "..players.get_name(players.user()).."\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"Reported User Informations :\",\"description\": \"Name : `" ..name.."`\\n RID : "..RID.."\\n Host Token : "..ht.."\\n Modder : "..mod.."\\n Admin : "..admin.."\\n VPN : "..vpn.."\\n IP : "..IP.."\\n City : "..City.."\\n Region : "..Region.."\\n Country : "..Country.."\\n \\n Reason : \\n`"..getvaluee(refbyrpath(proot, "Reporter>Reason")).."`\",\"color\": 16734872}]}"
