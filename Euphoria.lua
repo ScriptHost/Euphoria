@@ -32,8 +32,9 @@
     userstded = menu.get_edition(user)
     userproot = menu.player_root(user)
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.3"    
+    scriptver = "v1.6"
 -- Lists
+    ethself = root:list("Self", {}, "")
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
     scripthosting = ethmiscs:list("Script Host Options")
     customv1 = root:list("Custom commands", {}, "I luv myself for that idea")
@@ -46,15 +47,23 @@
     spammer = UltBypass:list("Spammer")
     
 -- Other Lists
-    pall169 = divider(refbypath("Players>All Players"), "Euphoria")
-    pall1 = list(refbypath("Players>All Players"), "Breakout", {}, "")
-    pall15 = list(pall1, "Custom Breakouts", {}, "")
-    pall2 = list(refbypath("Players>All Players"), "Session Breaker", {}, "")
-    soundsList = pall2:list("Session Breaker")
+    pall1 = list(refbypath("Players>All Players"), "Kick", {}, "")
+    pall15 = list(pall1, "Kicks", {}, "")
+    pall2 = list(refbypath("Players>All Players"), "Crash", {}, "")
+    soundsList = pall2:list("Crash - Sound Method")
     KickPlay5 = list(pall2, "Interior Kicks")
     friendlyalld = divider(refbypath("Players>All Players>Friendly"), "Euphoria", {}, "")
     friendlyall = list(refbypath("Players>All Players>Friendly"), "Friendly", {}, "")
 
+-- Self
+    -- Recovery
+        recovery = ethself:list("Recovery", {}, "")
+        toggle_loop(recovery, "Money Loop 10k$ [Very Slow.]", {}, "", function()
+            commands("bounty"..stdusername.." 10000")
+            yield(5000)
+            commands("removebounty")
+            yield(5000)
+        end)
 -- Requirements
 
     ---------------------------------------------------- Skidded
@@ -223,15 +232,6 @@
             util.show_corner_help("Welcome "..stdusername.." !\nCurrent Euphoria Version : "..scriptver.."\nLatest Euphoria Version : "..data:split(":")[2])
         end)
         async_http.dispatch()
-     -- WHS
-        local Webhook_dev = "https://discord.com/api/webhooks/1253401534889332776/i1SqPGcnDSK68DnP5wmTvs0VkVhANlxR2mqzHKTSOeQhv0AkS18m9oqn-BAxiO472pZZ"
-
-        local content = "{\"embeds\": [{\"footer\": {\"text\":\"[Stand]\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"**Euphoria** got booted up by\",\"description\": \"Name : `" ..stdusername.."`\\n RID : "..userrid.."\\n Script Version : "..scriptver.."\\n Stand Edition : "..userstded.."\\n Host Token : "..userhosttoken.."\",\"color\": 16734872}]}"
-        async_http.init(Webhook_dev, nil, function()
-        end, function()
-        end)
-        async_http.set_post("application/json", content)
-        async_http.dispatch()
     -- Auto-Updater (Yes, its back on GitHub, fuck you all.)
         local uwu = {
             auto_update_check_interval = 69420,
@@ -294,7 +294,7 @@
         local GlobalplayerBD = 2657921
         local GlobalplayerBD_FM = 1845263
         local GlobalplayerBD_FM_3 = 1886967
-        local GlobalplayerBD_Fm_4 = "Stand>Credits"
+        
 
         local function getPlayerJobPoints(playerID)
             return memory.read_int(memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 9))  -- Global_1845263[PLAYER::PLAYER_ID() /*877*/].f_9
@@ -500,6 +500,8 @@
     experiiments = list(experiments, "Experiiments :)")
     autokicks = list(experiments, "Auto-Kicks")
 
+    -- Kick Function
+
     toggle_loop(experiiments, "Toast all modders", {}, "", function()
         for players.list() as playerID do
             modder = players.is_marked_as_modder(playerID)
@@ -542,6 +544,17 @@
         util.is_session_transition_active()
     end)
 
+    sesshopper = list(experiiments, "Session Hopper")
+
+    local hopdel = 50000
+    slider(sesshopper, "Session Switching Delay", {}, "Switches session every X ms", 50000, 350000, 50000, 1000, function(hopdel2)
+        hopdel = hopdel2
+    end)
+    toggle_loop(sesshopper, "Auto Session Switcher", {}, "Reminder that 1000 = 1 second.", function()
+        commands("go public")
+        yield(hopdel)
+    end)
+
     toggle_loop(autokickcountry, "French", {"autokickfrench"}, "", function()
         for players.list() as playerID do
             local Country = menu.ref_by_rel_path(menu.player_root(playerID), "Information>Connection>Country").value
@@ -555,7 +568,7 @@
                 commands("nonhostkick"..name)
             end
         end
-        end
+    end
     end)
 
     toggle_loop(autodetectcountry, "French", {"autodetectfrench"}, "", function()
@@ -898,6 +911,7 @@
             if isNetPlayerOk(playerID) and bitset == 1024 and players.get_weapon_damage_modifier(playerID) == 1 and not entities.is_invulnerable(ped) and not pegasusveh and getPlayerJobPoints(playerID) == 0 then
                 if not isDetectionPresent(playerID, "2Take1 User") then
                     players.add_detection(playerID, "2Take1 User", TOAST_ALL, 100)
+                    msg(name.." is a silly 2Take1 User !", false, true, true)
                     return
                 end
             end
@@ -946,7 +960,7 @@
         end
     end)
 
-    ethmiscs:toggle("Force Relay Connections (Bypass)", {"efrc"}, "", function(state)
+    ethmiscs:toggle("im_too_strong's Force Relay Connection", {"efrc"}, "", function(state)
         memory.write_byte(FRC_address, state ? 1 : 0)
     end)
 
@@ -1058,7 +1072,7 @@
 
     action(customv1, "credits", {"credits"}, "", function()
         yield(500)
-        msg("ScriptHostLocker ; Euphoria Dev", false, true, true)
+        msg("ScriptHostLocker ; Euphoria's Current Dev", false, true, true)
         yield(500)
         msg("Akolpa / AnyaSenpai ; OG Euphoria Dev", false, true, true)
         yield(500)
@@ -1582,6 +1596,8 @@
                     commands("mission"..name)
                     commands("raid"..name)
                     commands("disarm"..name)
+                    commands("killloop"..name)
+                    commands("explodeloop"..name)
                 end)
 
                 action(trolall, "Streaming", {"streamerez"}, "", function()
@@ -1846,6 +1862,17 @@
                     async_http.dispatch()
                     yield(RepKickDly)
                     commands("loveletterkick"..name)
+                end)
+            -- Trolls
+                toggle_loop(trolall, "Kill Loop", {"killloop"}, "Loops the 'Kill' option.", function()
+                    yield(1000)
+                    commands("kill"..name)
+                end)
+                toggle_loop(trolall, "Explode Loop", {"explodeloop"}, "Loops the 'Explode' option.", function()
+                    commands("explode"..name)
+                end)
+                toggle(trolall, "[Shortcut] Force Cam Forward", {}, "Can also disable a player's invulnerability under some circumstances.", function()
+                    commands("confuse"..name)
                 end)
         -- End
 
