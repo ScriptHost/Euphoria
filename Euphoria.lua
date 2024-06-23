@@ -32,7 +32,7 @@
     userstded = menu.get_edition(user)
     userproot = menu.player_root(user)
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.6"
+    scriptver = "v1.7.1"
 -- Lists
     ethself = root:list("Self", {}, "")
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
@@ -1827,42 +1827,6 @@
                     SET_ENTITY_PROOFS(vehicle, false, false, false, false, false, false, false, false)
                 end
             end)
-
-        -- Reporter
-            -- Actions
-                textinput(customreporter, "Reason", {"euphoriareportingcustomreason"}, "", function()
-                end)
-            -- Webhook
-                local Webhook_link = "https://discord.com/api/webhooks/1253401440878198937/7IeLEkj77f3alvt__gPe6JBIGieVdjrvUym05QR4RmhZy3d8nNyz_7utReUBwwAwy8Rz"
-
-                action(customreporter, "Report Player", {"discordreport"}, "", function()
-                    local content = "{\"embeds\": [{\"footer\": {\"text\":\"Report sent by : "..players.get_name(players.user()).."\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"Reported User Informations :\",\"description\": \"Name : `" ..name.."`\\n RID : "..RID.."\\n Host Token : "..ht.."\\n Modder : "..mod.."\\n Admin : "..admin.."\\n VPN : "..vpn.."\\n IP : "..IP.."\\n City : "..City.."\\n Region : "..Region.."\\n Country : "..Country.."\\n \\n Reason : \\n`"..getvaluee(refbyrpath(proot, "Reporter>Reason")).."`\",\"color\": 16734872}]}"
-                async_http.init(Webhook_link, nil, function()
-                    toast("Successfully reported "..name.." !")
-                end, function()
-                    toast("A rare error occured, please try again or DM scripthostlocker on Discord.")
-                end)
-                    async_http.set_post("application/json", content)
-                    async_http.dispatch()
-                end)
-
-                local RepKickDly
-                slider(customreporter, "Kick Delay", {}, "", 0, 30000, 20000, 1000, function(RepKickDely)
-                    RepkickDly = RepKickDely
-                end)
-
-                action(customreporter, "Report + Kick Player", {"discordreportkick"}, "", function()
-                    local content = "{\"embeds\": [{\"footer\": {\"text\":\"Report sent by : "..players.get_name(players.user()).."\",\"icon_url\": \"\"},\"thumbnail\": {\"url\": \"\"},\"title\": \"Reported User Informations :\",\"description\": \"Name : `" ..name.."`\\n RID : "..RID.."\\n Host Token : "..ht.."\\n Modder : "..mod.."\\n Admin : "..admin.."\\n VPN : "..vpn.."\\n IP : "..IP.."\\n City : "..City.."\\n Region : "..Region.."\\n Country : "..Country.."\\n \\n Reason : \\n`"..getvaluee(refbyrpath(proot, "Reporter>Reason")).."`\",\"color\": 16734872}]}"
-                async_http.init(Webhook_link, nil, function()
-                    toast("Successfully reported "..name.." !")
-                end, function()
-                    toast("A rare error occured, please try again or DM scripthostlocker on Discord.")
-                end)
-                    async_http.set_post("application/json", content)
-                    async_http.dispatch()
-                    yield(RepKickDly)
-                    commands("loveletterkick"..name)
-                end)
             -- Trolls
                 toggle_loop(trolall, "Kill Loop", {"killloop"}, "Loops the 'Kill' option.", function()
                     yield(1000)
