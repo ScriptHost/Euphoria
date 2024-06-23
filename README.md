@@ -1,8 +1,4 @@
 # Euphoria
-**ScriptHostLocker > Akolpa !**
-I am not scared of Stand's staff. I'll do the exact same as Akolpa, but better.
-I don't have old changelogs as Akolpa refuses to give them to me.
-
 # Changelogs :
 (Note that minor updates such as v0**.X** won't be written in Changelogs, unless it's something major.)
 
@@ -10,6 +6,9 @@ I don't have old changelogs as Akolpa refuses to give them to me.
 - Added Euphoria > Self > Recovery
   - Currently has a money loop revolving around bounties.
 - Added Kill and Explode Loop
+- [Edit] Removed :
+  - Reporter
+  - Logger upon the start of script.
 
 ## v1 - Released on 15/06/2024
 - Initial (re)release of Euphoria.
