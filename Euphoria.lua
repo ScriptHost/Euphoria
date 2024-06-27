@@ -13,7 +13,7 @@
     toggle_loop = menu.toggle_loop
     list = menu.list
     kr = util.keep_running
-    commands = menu.trigger_commands
+    coms = menu.trigger_commands
     msg = chat.send_message
     restartscript = util.restart_script
     stopscript = util.stop_script
@@ -24,6 +24,7 @@
     host = players.get_host
     shost = players.get_script_host
     pid = playerID
+    exists = players.exists
     user = players.user()
     userrid = players.get_rockstar_id(user)
     stdusername = players.get_name(user)
@@ -31,8 +32,11 @@
     textinput = menu.text_input
     userstded = menu.get_edition(user)
     userproot = menu.player_root(user)
+    trigse = util.trigger_script_event
+    clickslider = menu.click_slider
+    valreplace = menu.add_value_replacement
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.7.1"
+    scriptver = "v1.7.2"
 -- Lists
     ethself = root:list("Self", {}, "")
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
@@ -59,29 +63,14 @@
     -- Recovery
         recovery = ethself:list("Recovery", {}, "")
         toggle_loop(recovery, "Money Loop 10k$ [Very Slow.]", {}, "", function()
-            commands("bounty"..stdusername.." 10000")
+            coms($"bounty {stdusername} 10000")
             yield(5000)
-            commands("removebounty")
+            coms("removebounty")
             yield(5000)
         end)
 -- Requirements
 
     ---------------------------------------------------- Skidded
-        -- Addict
-            local se = {
-                sekicks0 = -1013606569,
-                sekicks1 = -901348601,
-                sekicks3 = -1638522928,
-                sekicks3_1 = 1017995959, -- older gta se version
-                sekicks4 = -2026172248,
-                sekicks7 = -642704387,
-            }
-
-            function send_script_event(first_arg, receiver, args)
-                table.insert(args, 1, first_arg)
-                util.trigger_script_event(1 << receiver, args)
-            end
-
         --- Data
 
 
@@ -156,12 +145,12 @@
 
             gunvan:click_slider("1. Choose Gun Van Slot", {}, "Choose the gun van slot to modify from 1-10", 1, 10, 1, 1, function(SlotID) -- The slot ID needs to have an extra 1, the array is actually 0-9 but GTA is dumb
                 SelectedSlot = SlotID
-                util.toast("slot #" .. SelectedSlot .. " selected, proceed to step 2.")
+                toast("slot #" .. SelectedSlot .. " selected, proceed to step 2.")
             end)
 
             gunvan:text_input("2. Modify Gun Van Slot", {'SetGVSlot '}, "Set the gunvan slot to the weapon hash \nFound at: https://wiki.rage.mp/index.php?title=Weapons", function(Input)
-                SetGlobalInt(Globals.WeaponSlots + SelectedSlot, util.joaat(Input))
-                util.toast("This weapon is now in the gun van in slot #" .. SelectedSlot .. ".")
+                SetGlobalInt(Globals.WeaponSlots + SelectedSlot, joaat(Input))
+                toast("This weapon is now in the gun van in slot #" .. SelectedSlot .. ".")
             end)
 
             gunvan:action("Gun Van Discount", {}, "Adds a nice 10% discount to all items in the gun van", function() -- 10% is the limit, from my testing it can't go backwards i think
@@ -171,27 +160,27 @@
             end)
 
             gunvan:action("Optimal Gun Van Slots", {}, "Adds a few cool weapons like the navy revolver automatically", function()
-                SetGlobalInt(Globals.WeaponSlots + 1, util.joaat("weapon_navyrevolver"))
-                SetGlobalInt(Globals.WeaponSlots + 2, util.joaat("weapon_gadgetpistol"))
-                SetGlobalInt(Globals.WeaponSlots + 3, util.joaat("weapon_stungun_mp"))
-                SetGlobalInt(Globals.WeaponSlots + 4, util.joaat("weapon_doubleaction"))
-                SetGlobalInt(Globals.WeaponSlots + 5, util.joaat("weapon_railgunxm3"))
-                SetGlobalInt(Globals.WeaponSlots + 6, util.joaat("weapon_minigun"))
-                SetGlobalInt(Globals.WeaponSlots + 7, util.joaat("weapon_heavysniper_mk2"))
-                SetGlobalInt(Globals.WeaponSlots + 8, util.joaat("weapon_combatmg_mk2"))
-                SetGlobalInt(Globals.WeaponSlots + 9, util.joaat("weapon_tacticalrifle"))
-                SetGlobalInt(Globals.WeaponSlots + 10, util.joaat("weapon_specialcarbine_mk2"))
+                SetGlobalInt(Globals.WeaponSlots + 1, joaat("weapon_navyrevolver"))
+                SetGlobalInt(Globals.WeaponSlots + 2, joaat("weapon_gadgetpistol"))
+                SetGlobalInt(Globals.WeaponSlots + 3, joaat("weapon_stungun_mp"))
+                SetGlobalInt(Globals.WeaponSlots + 4, joaat("weapon_doubleaction"))
+                SetGlobalInt(Globals.WeaponSlots + 5, joaat("weapon_railgunxm3"))
+                SetGlobalInt(Globals.WeaponSlots + 6, joaat("weapon_minigun"))
+                SetGlobalInt(Globals.WeaponSlots + 7, joaat("weapon_heavysniper_mk2"))
+                SetGlobalInt(Globals.WeaponSlots + 8, joaat("weapon_combatmg_mk2"))
+                SetGlobalInt(Globals.WeaponSlots + 9, joaat("weapon_tacticalrifle"))
+                SetGlobalInt(Globals.WeaponSlots + 10, joaat("weapon_specialcarbine_mk2"))
 
-                SetGlobalInt(Globals.ThrowableSlots + 1, util.joaat("weapon_stickybomb"))
-                SetGlobalInt(Globals.ThrowableSlots + 2, util.joaat("weapon_molotov"))
-                SetGlobalInt(Globals.ThrowableSlots + 3, util.joaat("weapon_pipebomb"))
+                SetGlobalInt(Globals.ThrowableSlots + 1, joaat("weapon_stickybomb"))
+                SetGlobalInt(Globals.ThrowableSlots + 2, joaat("weapon_molotov"))
+                SetGlobalInt(Globals.ThrowableSlots + 3, joaat("weapon_pipebomb"))
 
-                util.toast("Better weapons are now in the gun van")
+                toast("Better weapons are now in the gun van")
             end)
 
             gunvan:action("Teleport To Gun Van", {}, "Teleports you to the gun van", function()
                 if not GunVanCoords[CurrentPosition] then
-                    util.toast("This event is currently innactive")
+                    toast("This event is currently innactive")
                 else 
                     Coord = GunVanCoords[CurrentPosition]
                     players.teleport_3d(players.user(), Coord[1], Coord[2], Coord[3])
@@ -201,7 +190,7 @@
             gunvan:click_slider("Set Gun Van Position", {}, "Choose the gun van position", 1, 30, CurrentPosition, 1, function(PositionID)
                 CurrentPosition = PositionID
                 SetGlobalInt(Globals.Position, CurrentPosition - 1)
-                util.toast("The Gun Van has been moved.")
+                toast("The Gun Van has been moved.")
             end)
 
             gunvan:action("Reset Gun Van Slots", {}, "Returns the weapons inside the gun van to the originals (when the script was started)", function()
@@ -213,23 +202,23 @@
                     SetGlobalInt(Globals.ThrowableSlots + SlotID, DefaultThrowables[SlotID])
                 end
 
-                util.toast("The Gun Van has been restored.")
+                toast("The Gun Van has been restored.")
             end)
 
             gvthrow:click_slider("1. Choose Gun Van Slot", {}, "Choose the gun van slot to modify from 1-3", 1, 3, 1, 1, function(SlotID) -- The slot ID needs to have an extra 1, the array is actually 0-9 but GTA is dumb
                 SelectedSlot_Throwables = SlotID
-                util.toast("slot #" .. SelectedSlot_Throwables .. " selected, proceed to step 2.")
+                toast("slot #" .. SelectedSlot_Throwables .. " selected, proceed to step 2.")
             end)
 
             gvthrow:text_input("2. Modify Gun Van Slot", {'SetGVSlot2 '}, "Set the gunvan slot to the weapon hash \nFound at: https://wiki.rage.mp/index.php?title=Weapons", function(Input)
                 SetGlobalInt(Globals.ThrowableSlots + SelectedSlot_Throwables, util.joaat(Input))
 
-                util.toast("This weapon is now in the gun van in slot #" .. SelectedSlot_Throwables .. ".")
+                toast("This weapon is now in the gun van in slot #" .. SelectedSlot_Throwables .. ".")
             end)
     -- Run at start of script
      -- Notification
         async_http.init("https://raw.githubusercontent.com/ScriptHost/Euphoria/main/ver.txt", nil, function(data)
-            util.show_corner_help("Welcome "..stdusername.." !\nCurrent Euphoria Version : "..scriptver.."\nLatest Euphoria Version : "..data:split(":")[2])
+            util.show_corner_help($"Welcome {stdusername} !\nCurrent Euphoria Version : {scriptver}\nLatest Euphoria Version : "..data:split(":")[2])
         end)
         async_http.dispatch()
     -- Auto-Updater (Yes, its back on GitHub, fuck you all.)
@@ -309,7 +298,7 @@
             yield()
             yield()
             repeat
-                util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
+                trigse(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
                 util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, joaat("weapon_pistol"), 500.0, 0, 0, DF_IsAccurate | DF_IgnorePedFlags | DF_SuppressImpactAudio | DF_IgnoreRemoteDistCheck, 0, 0, 0, 0, 0, 0, 0, 0.0)
                 if util.current_time_millis() > timer then
                     toast($"{players.get_name(playerID)}'s godmode can not be removed. :/")
@@ -399,15 +388,17 @@
     ---------------- Kick All
 
         local function AnnoyHostKick(playerID)
-            if players.user() != players.get_host() then
+            local pid = playerID
+            local pnamepid = players.get_name(playerID)
+            if user != host() then
                 selectedplayer = {}
                 for b = 0, 31 do
                 selectedplayer[b] = false
                 end
 
-                for playerID = 0, 31 do
-                    if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
-                        commands("nonhostkick "..players.get_name(playerID))
+                for pid = 0, 31 do
+                    if pid ~= user and pid ~= host() and not selectedplayer[pid] and exists(pid) then
+                        coms("nonhostkick{pnamepid}")
                         yield()
                     end
                 end
@@ -417,20 +408,22 @@
         end
 
         local function k4(playerID)
-            if players.user() then
+            local pid = playerID
+            pnamepid = players.get_name(playerID)
+            if user then
                 selectedplayer = {}
                 for b = 0, 31 do
                 selectedplayer[b] = false
                 end
 
-                for playerID = 0, 31 do
-                    if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
-                        commands("loveletterkick "..players.get_name(playerID))
+                for pid = 0, 31 do
+                    if pid ~= user and pid ~= host() and not selectedplayer[pid] and exists(pid) then
+                        coms($"loveletterkick{pnamepid}")
                         yield()
                     end
                 end
             else
-                toast("Useless to use this command while your the host")
+                toast("Useless to use this command when you're the host")
             end
         end
 
@@ -452,7 +445,7 @@
     toast("Kicking the host...")
     if user == h2 then
         toast("Turning off Force Host because you are host already.")
-        commands("forcehost off")
+        coms("forcehost off")
     end
   end
 
@@ -463,7 +456,7 @@
         k4(playerID)
     else
         toast("You are not host!")
-        commands("ultbypassblockjoins off")
+        coms("ultbypassblockjoins off")
     end
   end
 
@@ -541,7 +534,7 @@
     end)
 
     toggle_loop(experiiments, "util.is_session_transition_active", {}, "", function()
-        util.is_session_transition_active()
+        toast(util.is_session_transition_active())
     end)
 
     sesshopper = list(experiiments, "Session Hopper")
@@ -551,7 +544,7 @@
         hopdel = hopdel2
     end)
     toggle_loop(sesshopper, "Auto Session Switcher", {}, "Reminder that 1000 = 1 second.", function()
-        commands("go public")
+        coms("go public")
         yield(hopdel)
     end)
 
@@ -563,9 +556,9 @@
             local host = players.get_host()
         if Country == "France" or Country == "Belgium" or Country == "Switzerland" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
     end
@@ -599,9 +592,9 @@
             local host = players.get_host()
         if Country == "Spain" or Country == "Brazil" or Country == "Portugal" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -625,9 +618,9 @@
             local host = players.get_host()
         if Country == "United Kingdom" or Country == "United States" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -651,9 +644,9 @@
             local host = players.get_host()
         if Country == "Russian Federation" or Country == "Ukraine" or Country == "Latvia" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -677,9 +670,9 @@
             local host = players.get_host()
         if Country == "Germany" or Country == "Switzerland" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -703,9 +696,9 @@
             local host = players.get_host()
         if Country == "Italy" or Country == "Switzerland" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -729,9 +722,9 @@
             local host = players.get_host()
         if Country == "China" or Country == "Japan" or Country == "Hong Kong" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -755,9 +748,9 @@
             local host = players.get_host()
         if Country == "Poland" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -781,9 +774,9 @@
             local host = players.get_host()
         if Country == "Romania" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -807,9 +800,9 @@
             local host = players.get_host()
         if Country == "Bulgarian" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -833,9 +826,9 @@
             local host = players.get_host()
         if Country == "Czech Republic" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -859,9 +852,9 @@
             local host = players.get_host()
         if Country == "Netherlands" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -885,9 +878,9 @@
             local host = players.get_host()
         if Country == "Sweden" or Country == "Norway" then
             if user == host then
-                commands("loveletter"..name)
+                coms("loveletter"..name)
             else
-                commands("nonhostkick"..name)
+                coms("nonhostkick"..name)
             end
         end
         end
@@ -895,22 +888,23 @@
 -- Misc Options
 
     ethmiscs:action("Open Stand Folder", {"opstd"}, "Shortcut : Stand Folder", function()
-    commands("openstandfolder")
+        coms("openstandfolder")
     end)
 
     ethmiscs:action("Clear Notifications", {"clrnot"}, "Clears all notifications, both stand and mini map.", function()
-    commands("clearnotifications;clearstandnotifys")
+        coms("clearnotifications;clearstandnotifys")
     end)
 
     ethmmd:toggle_loop("2Take1 User", {}, "Detects people using 2Take1. (Note: player must be in a vehicle spawned by them)", function()
         for players.list_except() as playerID do
-            local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+            local pid = playerID
+            local ped = GET_PLAYER_PED_SCRIPT_INDEX(pid)
             local vehicle = GET_VEHICLE_PED_IS_USING(ped)
             local bitset = DECOR_GET_INT(vehicle, "MPBitset")
             local pegasusveh = DECOR_GET_BOOL(vehicle, "CreatedByPegasus")
-            if isNetPlayerOk(playerID) and bitset == 1024 and players.get_weapon_damage_modifier(playerID) == 1 and not entities.is_invulnerable(ped) and not pegasusveh and getPlayerJobPoints(playerID) == 0 then
-                if not isDetectionPresent(playerID, "2Take1 User") then
-                    players.add_detection(playerID, "2Take1 User", TOAST_ALL, 100)
+            if isNetPlayerOk(pid) and bitset == 1024 and players.get_weapon_damage_modifier(pid) == 1 and not entities.is_invulnerable(ped) and not pegasusveh and getPlayerJobPoints(pid) == 0 then
+                if not isDetectionPresent(pid, "2Take1 User") then
+                    players.add_detection(pid, "2Take1 User", TOAST_ALL, 100)
                     msg(name.." is a silly 2Take1 User !", false, true, true)
                     return
                 end
@@ -920,10 +914,11 @@
     end)
 
     ethmmd:toggle_loop("YimMenu User", {}, "Detects people using YimMenu's \"Force Session Host\". This will also detect menus that have skidded from YimMenu such as Ethereal.", function() -- checking silly hardcoded host token cus who tf manually sets theirs to this anyways
-        for players.list() as playerID do
-            if tonumber(players.get_host_token(playerID)) == 41 then
-                if not isDetectionPresent(playerID, "YimMenu User") then
-                    players.add_detection(playerID, "YimMenu User", TOAST_ALL, 100)
+        local pid = playerID
+        for players.list() as pid do
+            if tonumber(players.get_host_token(pid)) == 41 then
+                if not isDetectionPresent(pid, "YimMenu User") then
+                    players.add_detection(pid, "YimMenu User", TOAST_ALL, 100)
                     return
                 end
             end
@@ -932,10 +927,10 @@
     end)
 
     ethmiscs:action("Who is Host & Script Host", {"whoishsh"}, "", function()
-        host = players.get_name(players.get_host())
-        sh = players.get_name(players.get_script_host())
+        host = pname(host())
+        sh = pname(shost())
         yield(500)
-        msg(host.." is the Host and "..sh.." is the Script Host", false, true, true)
+        msg($"{host} is the Host and {sh} is the Script Host", false, true, true)
     end)
 
     action(ethmiscs, "Restart Script (Euphoria)", {"euphoriarestart", "erestart"}, "", function()
@@ -966,9 +961,9 @@
 
     toggle(ethmiscs, "Ghost Mode", {"aghostmode", "adminmode"}, "", function(on)
         if on then
-            commands("otr on; hidefromplayerlist on; invisibility on")
+            coms("otr on; hidefromplayerlist on; invisibility on")
         else
-            commands("otr off; hidefromplayerlist off; invisibility off")
+            coms("otr off; hidefromplayerlist off; invisibility off")
         end
     end)
 
@@ -978,25 +973,24 @@
 
         yield(shdelay2)
         if user != sh then
-            commands("scripthost")
+            coms("scripthost")
             toast("Forced Script Host and perhaps broke session!")
         end
     end)
 
     scripthosting:toggle_loop("Force Host", {"forceh"}, "", function()
-        user = players.user()
         nhp = players.get_host_queue_position(user)
-        h = players.get_name(players.get_host())
-        h2 = players.get_host(players.user())
+        h = pname(host())
+        h2 = host(user)
 
         yield(shdelay2)
         if nhp == 1 then
-            commands("kick"..h)
+            coms("kick"..h)
         end
         toast("Kicking the host...")
         if user == h2 then
             toast("Turning off Force Host because you are host already.")
-            commands("forceh off")
+            coms("forceh off")
         end
     end)
 
@@ -1009,22 +1003,22 @@
         yield(500)
         msg("Ear Warning (You got 20 seconds to cut your volume)", false, true, true)
         yield(20000)
-        commands("givecollectiblesall")
-        commands("rpall")
+        coms("givecollectiblesall")
+        coms("rpall")
         yield(1000)
         msg("Friendly note to ask you to NOT ask for more :)", false, true, true)
     end, nil, nil, COMMANDPERM_FRIENDLY)
 
     action(friendlyall, "helpall textless", {"helpalltxtless"}, "", function()
         yield(500)
-        commands("givecollectiblesall")
-        commands("rpall")
+        coms("givecollectiblesall")
+        coms("rpall")
     end, nil, nil, COMMANDPERM_FRIENDLY)
 
 -- Misc stuff
 
     action(customv1, "Uncorrupt", {"uncorrupt"}, "", function()
-    commands("forcequittosp")
+        coms("forcequittosp")
     end)
 
     action(customv1, "stand version", {"standversion"}, "", function()
@@ -1089,9 +1083,7 @@
     end)
 
     action(pall15, "Breakout (Host Required)", {"sessbreakouth"}, "", function()
-        user = players.user()
-        host = players.get_host()
-        if user == host then
+        if user == host() then
             k4(playerID)
         else
             toast("You are not host!")
@@ -1099,7 +1091,7 @@
     end)
 
     pall2:action("Boat Skin Crash", {}, "", function()
-        commands("apt72all")
+        coms("apt72all")
         yield(15000)
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327) -- mazebank
          spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
@@ -1142,7 +1134,7 @@
 
     pall2:toggle_loop('Auto Sound Crash', {}, '', function ()
         for players.list_except(true) as playerID do
-            commands("apt72all")
+            coms("apt72all")
             local time = (util.current_time_millis() + 2000)
             while time > util.current_time_millis() do
                 local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(player_id))
@@ -1155,11 +1147,11 @@
     end)
 
     action(KickPlay5, "Classic Interior Kick All", {""}, "", function()
-    commands("interiorkickall")
+        coms("interiorkickall")
     end)
         
     action(KickPlay5, "TP All : Paleto Garage (Strawberry)", {""}, "", function()
-    commands("apt45all")
+        coms("apt45all")
     end)
 
     action(pall2, "Stop all sounds", {}, "", function ()
@@ -1180,8 +1172,8 @@
     rpLoopAll = rp_loop:slider("Loop Delay", {"lobbydelay"}, 'Note: setting the delay to "Fastest" will cause a fatal error in bigger lobbies and may lead to some issues.', 0, 2500, 5, 5, function(val)
         delay = val
     end)
-    menu.add_value_replacement(rpLoopAll, 0, "Fastest (Read Description)")
-    menu.add_value_replacement(rpLoopAll, 5, "Default")
+    valreplace(rpLoopAll, 0, "Fastest (Read Description)")
+    valreplace(rpLoopAll, 5, "Default")
 
     local function triggerCollectibleLoop(playerID, i)
         if players.get_rank(playerID) >= level then return end
@@ -1243,13 +1235,17 @@
             local RelIP = getvaluee(refbyrpath(proot, "Information>Connection>Relay IP"))
             local ISP = getvaluee(refbyrpath(proot, "Information>Connection>ISP"))
             local kd = players.get_kd(pid)
+            local rank = players.get_rank(pid)
             local admin = players.is_marked_as_admin(pid)
             local mod = players.is_marked_as_modder(pid)
             local anya = players.get_rockstar_id(pid) == 244695618
-            local yutsana = players.get_rockstar_id(pid) == 248147543
+            local shl = RID == 252617333
+            local yutsana = RID == 248147543
             local host = players.get_host()
             local comfriend = COMMANDPERM_FRIENDLY
             local comtox = COMMANDPERM_TOXIC
+            local host = players.get_host
+            local trigse = util.trigger_script_event
 
         -- Detections
 
@@ -1260,21 +1256,12 @@
                     end
                 end
             end
-
-            if name != username then
-                if RID == 244695618 then -- AnyaSenpai
-                    if not isDetectionPresent(pid, "OG Euphoria User") then
-                     players.add_detection(pid, "OG Euphoria User", TOAST_ALL, 100)
-                    end
-                end
-            end
         
         -- Lists
             ponlined = divider(proot, "Euphoria", {}, "")
-            ponline = list(proot, "Euphoria", {}, "Information in chat, maybe more soon idfk")
+            ponline = list(proot, "Euphoria", {}, "")
             ponline2 = list(ponline, "Informations in chat", {}, "")
             ccrash = list(refbyrpath(proot, "Crash"), "Euphoria Crashes", {}, "")
-            kick = list(refbyrpath(proot, "Kick"), "Euphoria Kicks", {}, "")
             trolalldivider = divider(refbyrpath(proot, "Trolling"), "Euphoria", {}, "")
             trolall = list(refbyrpath(proot, "Trolling"), "Euphoria Trolling", {}, "")
             fonlinedivider = divider(refbyrpath(proot, "Friendly"), "Euphoria", {}, "")
@@ -1283,7 +1270,7 @@
             reportingdivider = divider(refbyrpath(proot, "Increment Commend/Report Stats"), "Euphoria", {}, "")
             reporting = list(refbyrpath(proot, "Increment Commend/Report Stats"), "Spammers", {}, "")
             antigod = list(ponline, "Anti-God", {}, "")
-            customreporter = list(proot, "Reporter", {}, "")
+            kick = list(refbyrpath(proot, "Kick"), "Kick With Reason", {}, "")
         -- Individual RP Loop
 
             local levelPly = 120
@@ -1297,27 +1284,27 @@
             end)
 
             local rpLoopPlyr
-            rpLoopPlyr = fonlinerpl:toggle_loop("Enable Loop", {"rploop"}, $"Enables RP Loop on {players.get_name(playerID)}", function()
-                if not menu.player_root(playerID):isValid() then return end
-                local giveRP = menu.ref_by_rel_path(menu.player_root(playerID), "Friendly>Give RP")
-                if players.get_rank(playerID) >= levelPly then 
-                    toast($"{players.get_name(playerID)} is already at or above level {levelPly}. :)")
+            rpLoopPlyr = fonlinerpl:toggle_loop("Enable Loop", {"rploop"}, $"Enables RP Loop on {name}", function()
+                if not proot:isValid() then return end
+                local giveRP = refbyrpath(proot, "Friendly>Give RP")
+                if rank(playerID) >= levelPly then 
+                    toast($"{name} is already at or above level {levelPly}. :)")
                     rpLoopPlyr.value = false
                     return 
                 end
                 repeat
                     for i = 21, 24 do
-                        if players.get_rank(playerID) >= levelPly then break end
-                        util.trigger_script_event(1 << playerID, {968269233, players.user(), 4, i, 1, 1, 1})
-                        util.trigger_script_event(1 << playerID, {968269233, players.user(), 8, -1, 1, 1, 1})
+                        if rank(playerID) >= levelPly then break end
+                        trigse(1 << playerID, {968269233, players.user(), 4, i, 1, 1, 1})
+                        trigse(1 << playerID, {968269233, players.user(), 8, -1, 1, 1, 1})
                         giveRP:trigger()
                         if delayPly > 0 then
                             yield(delayPly)
                         end
                     end
                     yield()
-                until players.get_rank(playerID) >= levelPly or not rpLoopPlyr.value
-                if players.get_rank(playerID) >= levelPly then 
+                until rank(playerID) >= levelPly or not rpLoopPlyr.value
+                if rank(playerID) >= levelPly then 
                     toast($"{players.get_name(playerID)} is now at level {levelPly}. :)")
                     rpLoopPlyr.value = false
                     yield()
@@ -1328,26 +1315,26 @@
         -- Chat Features
             action(ponline2, "Send HT in chat", {"hosttoken"}, "Sends the players host token in chat", function()
                 yield(500)
-                msg(name.."'s host token is : "..ht, false, true, true)
+                msg($"{name}'s host token is : {ht}", false, true, true)
             end, nil, nil, comfriend)
 
             action(ponline2, "Send HP in chat", {"hostposition"}, "Sends the players host position in chat", function()
                 yield(500)
                 if hp == "N/A" then
-                    msg(name.." is the Host of the session.", false, true, true)
+                    msg($"{name} is the Host of the session.", false, true, true)
                 else
-                    msg(name.."'s place in the host queue is : "..hp, false, true, true)
+                    msg($"{name}'s place in the host queue is : {hp}", false, true, true)
                 end
             end, nil, nil, comfriend)
 
             action(ponline2, "Send RID in chat", {"rid"}, "Sends the players RID in chat", function()
                 yield(500)
-                msg("Here is " ..name.. "'s RID : "..RID, false, true, true)
+                msg($"Here is {name}'s RID : {RID}", false, true, true)
             end, nil, nil, comfriend)
 
             action(ponline2, "Country + Game Language", {"language"}, "Send the players Country IP and Game Language.", function()
                 yield(500)
-                msg(name.."'s country is "..Country.." and their game language is "..gamelang, false, true, true)
+                msg($"{name}'s country is {Country} and their game language is {gamelang}", false, true, true)
             end)
 
             -- Highfives
@@ -1359,55 +1346,55 @@
                 end)
 
                 action(highfive, "Highfive", {"highfive"}, "Leaks IP, location and other stuff.", function()
-                    if anya then
+                    if shl then
                         yield(200)
                         msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
                     else
                         if vpn or ISP == "Proton AG" then
                             yield(1000)
-                            msg(name.." is using a VPN. Their ISP is "..ISP, false, true, true)
+                            msg($"{name} is using a VPN. Their ISP is {ISP}", false, true, true)
                         else
                             yield(1000)
-                            msg(name.."'s Relay IP is "..RelIP..":"..RelPort..", his Lan IP is "..LanIP.." and his IP is "..IP..":"..IPP, false, true, true)
+                            msg($"{name}'s Relay IP is {RelIP}:{RelPort}, his Lan IP is {LanIP} and his IP is {IP}:{IPP}", false, true, true)
                             yield(200)
-                            msg(name.."'s RID is "..RID..", their game language is "..gamelang..", he lives at "..Country..", "..Region..", "..City..".", false, true, true)
+                            msg($"{name}'s RID is {RID}, their game language is {gamelang}, he lives at {Country}, {Region}, {City}.", false, true, true)
                             yield(20)
                         end
                     end
                 end, nil, nil, comtox)
 
                 action(highfive, "Highfive V2", {"highfivev2"}, "Leaks IP, location and other stuff with a kick at the end.", function()
-                    if anya then
-                        msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
+                    if shl then
+                        msg("Sorry but you cannot use that command on the developer!", false, true, true)
                     else
-                        commands("highfive"..name)
+                        commands($"highfive{name}")
                         yield(hfdelay2)
                         if user == host then
-                            commands("loveletter"..name)
+                            commands($"loveletter{name}")
                         else
-                            commands("kick"..name)
+                            commands($"kick{name}")
                         end
                     end
                 end, nil, nil, comtox)
 
                 action(highfive, "Highfive V3", {"highfivev3"}, "Leaks IP, location and other stuff with a crash at the end.", function()
-                    if anya then
-                        msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
+                    if shl then
+                        msg("Sorry but you cannot use that command on the developer.", false, true, true)
                     else
-                        commands("highfive"..name)
+                        commands($"highfive{name}")
                         yield(hfdelay2)
-                        commands("ultimatecrash"..name)
+                        commands($"ultimatecrash{name}")
                     end
                 end, nil, nil, comtox)
             
             action(ponline2, "Send Money in chat", {"money"}, "Sends the players money in chat", function()
                 yield(500)
-                msg(name.." has "..Cash.."$ in their wallet, "..Bank.."$ in their bank, totaling "..Total.."$.", false, true, true)
+                msg($"{name} has {Cash}$ in their wallet, {Bank}$ in their bank, totaling {Total}$.", false, true, true)
             end, nil, nil, comfriend)
             
             action(ponline2, "Send KD in chat", {"kd"}, "Sends the players KD in chat", function()
                 yield(500)
-                msg(name.." has a KD of "..kd, false, true, true)
+                msg($"{name} has a KD of {kd}.", false, true, true)
             end, nil, nil, comfriend)
             
             action(ponline2, "Send VPN User in chat", {"vpn"}, "Sends whether the player is using a VPN or not in chat", function()
@@ -1416,12 +1403,12 @@
                     msg("Your dear goddess will always use a VPN !", false, true, true)
                 else
                     if vpn then
-                        msg(name.." is using a VPN", false, true, true)
+                        msg($"{name} is using a VPN.", false, true, true)
                     else
                         if ISP == "Proton AG" or ISP == "Nomotech SAS" or ISP == "NordNet SA" then
-                            msg(name.." is using a VPN that isnt detected by default.", false, true, true)
+                            msg($"{name} is using a VPN that isnt detected by default.", false, true, true)
                         else
-                            msg(name.." isn't using a VPN.", false, true, true)
+                            msg($"{name} isn't using a VPN.", false, true, true)
                         end
                     end
                 end
@@ -1430,12 +1417,12 @@
             action(ponline2, "Modder Reveal", {"modcheck"}, "Sends whether the player is Modding or not in chat", function()
                 yield(500)
                 if not mod then
-                    msg(name.." is not a modder", false, true, true)
+                    msg($"{name} is not a modder", false, true, true)
                 else
-                    if anya then
+                    if shl then
                         msg("Your dear goddess will always be a modder ;)", false, true, true)
                     else
-                        msg(name.." is a modder.", false, true, true)
+                        msg("{name} is a modder.", false, true, true)
                     end
                 end
             end, nil, nil, comfriend)
@@ -1451,7 +1438,7 @@
                 reportingin = list(reporting, "Individual Reason Spammer", {}, "")
 
                 toggle_loop(reporting, "Spam Reports", {"spamrep"}, "Spam each type of report.", function()
-                    commands("reportgriefing"..name.." ;reportexploits"..name.." ;reportbugabuse"..name.." ;reportannoying"..name.." ; reporthate"..name.." ;reportvcannoying"..name.." ;reportvchate"..name)
+                    coms($"reportgriefing{name};reportexploits{name};reportbugabuse{name};reportannoying{name}; reporthate{name};reportvcannoying{name};reportvchate{name}")
                     yield(RepDly)
                 end)
 
@@ -1461,45 +1448,45 @@
                 end) -- Individual Report
 
                 toggle_loop(reportingin, "Spam : Griefing or Disruptive Gameplay", {}, "", function ()
-                    commands("reportgriefing"..name)
+                    coms($"reportgriefing{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Cheating or Modding", {}, "", function ()
-                    commands("reportexploits"..name)
+                    coms($"reportexploits{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Glitching or Abusing Game Features", {}, "", function ()
-                    commands("reportbugabuse"..name)
+                    coms($"reportbugabuse{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Text - Annoying Me", {}, "", function ()
-                    commands("reportannoying"..name)
+                    coms($"reportannoying{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Text - Hate Speech", {}, "", function ()
-                    commands("reporthate"..name)
+                    coms($"reporthate{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Voice - Annoying Me", {}, "", function ()
-                    commands("reportvcannoying"..name)
+                    coms($"reportvcannoying{name}")
                     yield(RepDly2)
                 end)
 
                 toggle_loop(reportingin, "Spam : Voice - Hate Speech", {}, "", function ()
-                    commands("reportvchate"..name)
+                    coms($"reportvchate{name}")
                     yield(RepDly2)
                 end)
 
                 reportingin2 = list(reporting, "Individual Commendation Spam", {}, "")
 
                 toggle_loop(reporting, "Spam Commendations", {"spamcom"}, "Might drop your FPS", function()
-                    commands("commendfriendly"..name)
-                    commands("commendhelpful"..name)
+                    coms($"commendfriendly{name}")
+                    coms($"commendhelpful{name}")
                     yield(RepDly)
                 end)
 
@@ -1509,20 +1496,20 @@
                 end) -- Individual Commends
 
                 toggle_loop(reportingin2, "Helpful", {}, "", function ()
-                    commands("commendhelpful"..name)
+                    coms($"commendhelpful{name}")
                     yield(RepDly3)
                 end)
 
                 toggle_loop(reportingin2, "Friendly", {}, "", function ()
-                    commands("commendfriendly"..name)
+                    coms($"commendfriendly{name}")
                     yield(RepDly3)
                 end)
                 
                 divider(reporting, "v Intense FPS Drops v")
                 
                 toggle(reporting, "Spam Both", {}, "Will drop your FPS", function()
-                    commands("spamrep"..name)
-                    commands("spamcom"..name)
+                    coms($"spamrep{name}")
+                    coms($"spamcom{name}")
                 end)
 
 
@@ -1535,90 +1522,90 @@
                 end)
 
                 action(ccrash, "Crash n kick", {"crashkick"}, "Crashes then kicks the player, for safety ;)", function()
-                    commands("crash"..name)
+                    coms($"crash{name}")
                     yield(50)
-                    commands("footlettuce"..name)
+                    coms($"footlettuce{name}")
                     yield(50)
-                    commands("slaughter"..name)
+                    coms($"slaughter{name}")
                     yield(50)
-                    commands("steamroll"..name)
+                    coms($"steamroll{name}")
                     yield(1000)
                     if user == host then
-                        commands("ban"..name)
+                        coms($"loveletterkick{name}")
                     else
-                        commands("kick"..name)
-                        toast("You weren't host so I did a smart kick instead ;)")
+                        coms($"kick{name}")
+                        toast("You weren't host so I did a Smart kick instead ;)")
                     end
                 end, nil, nil, comtox)
 
                 action(ccrash, "Crash n kick V2", {"ultimatecrash"}, "Crashes then kicks the player (a bit more aggressively), for safety ;)", function()
-                    commands("ptfxscale"..name.." 10")
-                    commands("particlespam"..name)
+                    coms($"ptfxscale {name} 10")
+                    coms($"particlespam{name}")
                     yield(200)
-                    commands("crashkick"..name)
+                    coms($"crashkick{name}")
                 end, nil, nil, comtox)
 
                 action(ccrash, "All typa crash", {"allcrash"}, "Crashes the player with everything it can.", function()
-                    commands("crash"..name)
+                    coms($"crash{name}")
                     yield(50)
-                    commands("footlettuce"..name)
+                    coms($"footlettuce{name}")
                     yield(50)
-                    commands("slaughter"..name)
+                    coms($"slaughter{name}")
                     yield(50)
-                    commands("steamroll"..name)
+                    coms($"steamroll{name}")
                     yield(1000)
                 end)
 
                 action(trolall, "Turn all on/off", {"turnonalltroll"}, "", function()
-                    commands("pwanted"..name)
-                    commands("freeze"..name)
-                    commands("fakemoneydrop"..name)
-                    commands("nopassivemode"..name)
-                    commands("confuse"..name)
-                    commands("ragdoll"..name)
-                    commands("shakecam"..name)
-                    commands("gravitate"..name)
-                    commands("aggressivenpcs"..name)
-                    commands("mugloop"..name)
-                    commands("kill"..name)
-                    commands("explode"..name)
-                    commands("ptfxscale"..name.." 10")
-                    commands("particlespam"..name)
-                    commands("bounty"..name.." 10000")
-                    commands("loopbounty"..name)
-                    commands("notifyspam"..name)
-                    commands("sendtojob"..name)
-                    commands("vehkick"..name)
-                    commands("interiorkick"..name)
-                    commands("novehs"..name)
-                    commands("ceokick"..name)
-                    commands("infiniteloading"..name)
-                    commands("mission"..name)
-                    commands("raid"..name)
-                    commands("disarm"..name)
-                    commands("killloop"..name)
-                    commands("explodeloop"..name)
+                    coms($"pwanted{name}")
+                    coms($"freeze{name}")
+                    coms($"fakemoneydrop{name}")
+                    coms($"nopassivemode{name}")
+                    coms($"confuse{name}")
+                    coms($"ragdoll{name}")
+                    coms($"shakecam{name}")
+                    coms($"gravitate{name}")
+                    coms($"aggressivenpcs{name}")
+                    coms($"mugloop{name}")
+                    coms($"kill{name}")
+                    coms($"explode{name}")
+                    coms($"ptfxscale {name} 10")
+                    coms($"particlespam{name}")
+                    coms($"bounty {name} 10000")
+                    coms($"loopbounty{name}")
+                    coms($"notifyspam{name}")
+                    coms($"sendtojob{name}")
+                    coms($"vehkick{name}")
+                    coms($"interiorkick{name}")
+                    coms($"novehs{name}")
+                    coms($"ceokick{name}")
+                    coms($"infiniteloading{name}")
+                    coms($"mission{name}")
+                    coms($"raid{name}")
+                    coms($"disarm{name}")
+                    coms($"killloop{name}")
+                    coms($"explodeloop{name}")
                 end)
 
                 action(trolall, "Streaming", {"streamerez"}, "", function()
-                    commands("confuse"..name)
-                    commands("ptfxscale"..name.." 10")
-                    commands("particlespam"..name)
-                    commands("ragdoll"..name)
-                    commands("givecollectibles"..name)
-                    commands("rplooplvl"..name.." 8000")
-                    commands("rploop"..name)
-                    commands("rp"..name)
-                    commands("snack"..name)
-                    commands("figurines"..name)
-                    commands("cards"..name)
+                    coms($"confuse{name}")
+                    coms($"ptfxscale {name} 10")
+                    coms($"particlespam{name}")
+                    coms($"ragdoll{name}")
+                    coms($"givecollectibles{name}")
+                    coms($"rplooplvl {name} 8000")
+                    coms($"rploop{name}")
+                    coms($"rp{name}")
+                    coms($"snack{name}")
+                    coms($"figurines{name}")
+                    coms($"cards{name}")
                 end)
                     
                 action(ccrash, "Trolley Crash >.<", {"trolleycrash"}, "Turns on every trolling options and does everything to remove the dude.", function()
-                    commands("turnonalltroll"..name)
-                    commands("allcrash"..name)
+                    coms($"turnonalltroll{name}")
+                    coms($"allcrash{name}")
                     if not user == host then
-                        commands("kick"..name)
+                        coms($"kick{name}")
                     end
                 end)
 
@@ -1626,135 +1613,136 @@
                 end)
 
                 action(hvhlist, "HvH Pro be like", {"hvh"}, "", function()
-                    commands("crash"..name)
+                    coms($"crash{name}")
                     yield(25)
-                    commands("footlettuce"..name)
+                    coms($"footlettuce{name}")
                     yield(25)
-                    commands("slaughter"..name)
+                    coms($"slaughter{name}")
                     yield(25)
-                    commands("steamroll"..name)
+                    coms($"steamroll{name}")
                     yield(25)
-                    commands("turnonalltroll"..name)
+                    coms($"turnonalltroll{name}")
                     yield(25)
                     if not user == host then
-                        commands("kick"..name)
-                        commands("aids"..name)
-                        commands("orgasmkick"..name)
-                        commands("nonhostkick"..name)
-                        commands("pickupkick"..name)
+                        coms($"kick{name}")
+                        coms($"aids{name}")
+                        coms($"orgasmkick{name}")
+                        coms($"nonhostkick{name}")
+                        coms($"pickupkick{name}")
                     end
                 end)
 
                 toggle_loop(hvhlist, "HvH Pro Looped", {"hvhloop"}, "Laggy!", function()
-                    commands("crash"..name)
-                    commands("footlettuce"..name)
-                    commands("slaughter"..name)
-                    commands("steamroll"..name)
-                    commands("turnonalltroll"..name)
+                    coms($"crash{name}")
+                    coms($"footlettuce{name}")
+                    coms($"slaughter{name}")
+                    coms($"steamroll{name}")
+                    coms($"turnonalltroll{name}")
                     if not user == host then
-                        commands("kick"..name)
-                        commands("aids"..name)
-                        commands("orgasmkick"..name)
-                        commands("nonhostkick"..name)
-                        commands("pickupkick"..name)
+                        coms($"kick{name}")
+                        coms($"aids{name}")
+                        coms($"orgasmkick{name}")
+                        coms($"nonhostkick{name}")
+                        coms($"pickupkick{name}")
                     end
                 end)
-            -- Kicks
-                toggle_loop(kick, "SE Kick (S0)", {}, "", function()
-                    local int_min = -2147483647
-                    local int_max = 2147483647
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks0, pid, {8, 5, -995382610, -1005524293, 1105725452, -995382610, -1005524293, 1105725452, -995350040, -1003336651, 1102848299, 0, 0, 0, 0, 0, 0, 5, 1110704128, 1110704128, 0, 0, 0, 5, 131071, 131071, 131071, 0, 0, 5, 0, 0, 0, 0, 0, 1965090280, -1082130432, 0, 0, math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-                    send_script_event(se.sekicks0, pid, {8, 5, -995382610, -1005524293, 1105725452, -995382610, -1005524293, 1105725452, -995350040, -1003336651, 1102848299, 0, 0, 0, 0, 0, 0, 5, 1110704128, 1110704128, 0, 0, 0, 5, 131071, 131071, 131071, 0, 0, 5, 0, 0, 0, 0, 0, 1965090280, -1082130432, 0, 0})
-                    end
-                    commands("givesh" .. players.get_name(pid))
-                    yield()
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks0, pid, {8, 5, -995382610, -1005524293, 1105725452, -995382610, -1005524293, 1105725452, -995350040, -1003336651, 1102848299, 0, 0, 0, 0, 0, 0, 5, 1110704128, 1110704128, 0, 0, 0, 5, 131071, 131071, 131071, 0, 0, 5, 0, 0, 0, 0, 0, 1965090280, -1082130432, 0, 0, pid, math.random(int_min, int_max)})
-                    send_script_event(se.sekicks0, pid, {8, 5, -995382610, -1005524293, 1105725452, -995382610, -1005524293, 1105725452, -995350040, -1003336651, 1102848299, 0, 0, 0, 0, 0, 0, 5, 1110704128, 1110704128, 0, 0, 0, 5, 131071, 131071, 131071, 0, 0, 5, 0, 0, 0, 0, 0, 1965090280, -1082130432, 0, 0})
-                    util.yield(100)
-                    end
-                end)
-            
-                toggle_loop(kick, "SE Kick (S1)", {}, "", function()
-                    local int_min = -2147483647
-                    local int_max = 2147483647
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks1, pid, {6, 0, math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-                    send_script_event(se.sekicks1, pid, {6, 0})
-                    end
-                    commands("givesh" .. players.get_name(pid))
-                    util.yield()
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks1, pid, {6, 0, pid, math.random(int_min, int_max)})
-                    send_script_event(se.sekicks1, pid, {6, 0})
-                    yield(100)
-                    end
-                end)
-            
-                toggle_loop(kick, "SE Kick (S3)", {}, "", function()
-                    local int_min = -2147483647
-                    local int_max = 2147483647
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks3, pid, {12, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-                    send_script_event(se.sekicks3, pid, {12, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-                    end
-                    commands("givesh" .. players.get_name(pid))
-                    yield()
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks3, pid, {12, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, pid, math.random(int_min, int_max)}) -- S3 Credits to legy
-                    send_script_event(se.sekicks3_1, pid, {27, 0}) -- S1 Credits to legy
-                    util.yield(100)
-                    end
-                end)
-            
-                toggle_loop(kick, "SE Kick (S4)", {}, "", function()
-                    local int_min = -2147483647
-                    local int_max = 2147483647
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks4, pid, {6, 0, 0, 0, 1, math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-                    send_script_event(se.sekicks4, pid, {6, 0, 0, 0, 1})
-                    end
-                    commands("givesh" .. players.get_name(pid))
-                    yield()
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks4, pid, {6, 0, 0, 0, 1, pid, math.random(int_min, int_max)}) -- S3 Credits to legy
-                    send_script_event(se.sekicks4, pid, {6, 0, 0, 0, 1})
-                    util.yield(100)
-                    end
-                end)
-            
-                toggle_loop(kick, "SE Kick (S7)", {}, "", function()
-                    local int_min = -2147483647
-                    local int_max = 2147483647
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks7, pid, {6, 536247389, -1910234257, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-                    math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-                    send_script_event(se.sekicks7, pid, {6, 536247389, -1910234257, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1})
-                    end
-                    commands("givesh" .. players.get_name(pid))
-                    yield()
-                    for i = 1, 15 do
-                    send_script_event(se.sekicks7, pid, {6, 536247389, -1910234257, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, pid, math.random(int_min, int_max)}) -- S3 Credits to legy
-                    send_script_event(se.sekicks7, pid, {6, 536247389, -1910234257, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1})
-                    util.yield(100)
-                    end
-                end)
+            -- Kicks?
+                -- Input
+                    kreason = textinput(kick, "Reason", {"kickreason"}, "", function()
+                    end)
+                -- Kick
+                    -- Kick with Reason
+                        -- Function
+                            local ktypes = {
+                                S = "Starless Kick",
+                                PO = "Pool Overflow Kick",
+                                US = "Unsync Kick",
+                                STSP = "Send to SP Kick",
+                                BL = "Session Ban",
+                                H = "Host Kick",
+                                NH = "Non-Host Kick",
+                                InvP = "Corrupted Figurine Kick"
+                            }
+                            local function kickreason()
+                                local valreason = getvaluee(refbyrpath(proot, "Kick>Kick With Reason>Reason"))
+                                local valtype = getvaluee(refbyrpath(proot, "Kick>Kick With Reason>Kick Type"))
+                                if valtype == 0 then
+                                    coms($"kick{name}") -- Smart
+                                    toast($"Kicked {name} using Smart Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {valtype} / {ktypes.S} for {valreason}.", false, true, true)
+                                end
+                                if valtype == 1 then
+                                    coms($"aids{name}") -- Pool's Closed
+                                    toast($"Kicked {name} using Pool's Closed Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {ktypes.PO} for {valreason}.", false, true, true)
+                                end
+                                if valtype == 2 then
+                                    coms($"loveletterkick{name}") -- Love Letter
+                                    toast($"Kicked {name} using Love Letter / Unsync Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {ktypes.US} for {valreason}.", false, true, true)
+                                end
+                                if valtype == 3 then
+                                    coms($"orgasmkick{name}") -- Orgasm
+                                    toast($"Kicked {name} using Orgasm Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {ktypes.STSP} for{valreason}.", false, true, true)
+                                end
+                                if valtype == 4 then
+                                    if user != host() then
+                                        toast("You aren't host.")
+                                    else
+                                        coms($"blacklist{name}") -- Blacklist
+                                        toast($"Kicked {name} using Blacklist Kick")
+                                        yield(1000)
+                                        msg($"{name} got kicked via {ktypes.BL} for {valreason}.", false, true, true)
+                                    end
+                                end
+                                if valtype == 5 then
+                                    if user != host() then
+                                        toast("You aren't host.")
+                                    else
+                                        coms($"hostkick{name}") -- Host
+                                        toast($"Kicked {name} using Host Kick")
+                                        yield(1000)
+                                        msg($"{name} got kicked via {ktypes.H} for {valreason}.", false, true, true)
+                                    end
+                                end
+                                if valtype == 6 then
+                                    coms($"nonhostkick{name}") -- NHost
+                                    toast($"Kicked {name} using Non-Host Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {ktypes.NH} for {valreason}.", false, true, true)
+                                end
+                                if valtype == 7 then
+                                    coms($"pickupkick{name}") -- Inv. Pickup
+                                    toast($"Kicked {name} using Invalid Pickup Kick")
+                                    yield(1000)
+                                    msg($"{name} got kicked via {ktypes.InvP} for {valreason}.", false, true, true)
+                                end
+                            end
+                        -- Slider
+                            ktype = clickslider(kick, "Kick Type", {"kicktype"}, "", 0, 7, 0, 1, function(on_click)
+                                kickreason()
+                            end)
+                            valreplace(ktype, 0, "Smart")
+                            valreplace(ktype, 1, "Pool's Closed")
+                            valreplace(ktype, 2, "Love Letter")
+                            valreplace(ktype, 3, "Orgasm")
+                            valreplace(ktype, 4, "Blacklist [Host Only]")
+                            valreplace(ktype, 5, "Host [Host Only]")
+                            valreplace(ktype, 6, "Non-Host")
+                            valreplace(ktype, 7, "Invalid Pickup")
+
+                        
         -- Anti-Godmode
 
             local isGodmodeRemovable = {}
 
             antigod:toggle_loop("Remove Player Godmode", {}, lang.get_localised(-748077967), function()
-                util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
+                trigse(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
             end)
 
             antigod:action("Orbital Strike", {"orbgod"}, lang.get_localised(-748077967), function()
@@ -1763,29 +1751,29 @@
                 local vehicle = GET_VEHICLE_PED_IS_USING(ped)
                 if IS_PLAYER_DEAD(playerID) then return end
                 if IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(playerID)then
-                    toast($"{players.get_name(playerID)}'s ped has not been cloned yet. :/")
+                    toast($"{name}'s ped has not been cloned yet. :/")
                     return
                 end
 
                 if not isPlayerGodmode(playerID) then 
-                    toast($"{players.get_name(playerID)} is not in godmode or is using anti-detections. :/")
+                    toast($"{name} is not in godmode or is using anti-detections. :/")
                     return 
                 end
                 
                 repeat
                     toast("Removing Godmode...")
                     if util.current_time_millis() > timer then
-                        toast($"Failed to remove {players.get_name(playerID)}'s godmode. :/")
+                        toast($"Failed to remove {name}'s godmode. :/")
                         return
                     end
-                    util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
+                    trigse(1 << pid, {800157557, players.user(), 225624744, math.random(0, 9999)})
                     yield()
-                until not players.is_godmode(playerID)
-                isGodmodeRemovable[playerID] = true
+                until not players.is_godmode(pid)
+                isGodmodeRemovable[pid] = true
 
-                if isGodmodeRemovable[playerID] then
+                if isGodmodeRemovable[pid] then
                     toast("Orbital Striking Player...")
-                    if isPlayerInAnyVehicle(playerID) and entities.is_invulnerable(vehicle) then
+                    if isPlayerInAnyVehicle(pid) and entities.is_invulnerable(vehicle) then
                         entities.request_control(vehicle, 2500)
                         SET_ENTITY_CAN_BE_DAMAGED(vehicle, true)
                         SET_ENTITY_INVINCIBLE(vehicle, false)
@@ -1794,30 +1782,30 @@
 
                     setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
                     yield(500) -- yielding so their game realizes I'm using the orb
-                    local pos = players.get_position(playerID)
+                    local pos = players.get_position(pid)
                     ADD_OWNED_EXPLOSION(players.user_ped(), pos, 59, 1.0, true, false, 1.0)
                     USE_PARTICLE_FX_ASSET("scr_xm_orbital")
                     START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", pos, v3(), 1.0, false, false, false, true)
                     PLAY_SOUND_FROM_COORD(0, "DLC_XM_Explosions_Orbital_Cannon", pos, 0, true, 0, false) -- hardcoding sound id because GET_SOUND_ID doesnt work sometimes
-                    godKill(playerID)
+                    godKill(pid)
                     yield(1000) -- yielding here isnt needed but it gives yourself the notification that you orbed them
                     clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
                     yield(3000)
                     STOP_SOUND(0)
-                    isGodmodeRemovable[playerID] = false
+                    isGodmodeRemovable[pid] = false
                 end
             end)
 
             antigod:action("Teleport To Death Barrier", {}, "", function()
-                players.teleport_3d(playerID, -1141.5363, -2164.0615, 26.823051)
+                players.teleport_3d(pid, -1141.5363, -2164.0615, 26.823051)
             end)
 
             antigod:toggle_loop("Remove Vehicle Godmode", {}, lang.get_localised(-748077967), function()
                 local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
                 if not IS_PED_IN_ANY_VEHICLE(ped) then
-                    toast(lang.get_localised(PLYNVEH):gsub("{}", players.get_name(playerID)))
+                    toast(lang.get_localised(PLYNVEH):gsub("{}", players.get_name(pid)))
                     glitchveh.value = false
-                    util.stop_thread() 
+                    util.stop_thread()
                 end
                 local vehicle = GET_VEHICLE_PED_IS_USING(ped)
                 entities.request_control(vehicle, 2500)
@@ -1827,16 +1815,17 @@
                     SET_ENTITY_PROOFS(vehicle, false, false, false, false, false, false, false, false)
                 end
             end)
-            -- Trolls
+
+        -- Trolls
                 toggle_loop(trolall, "Kill Loop", {"killloop"}, "Loops the 'Kill' option.", function()
                     yield(1000)
-                    commands("kill"..name)
+                    coms($"kill{name}")
                 end)
                 toggle_loop(trolall, "Explode Loop", {"explodeloop"}, "Loops the 'Explode' option.", function()
-                    commands("explode"..name)
+                    coms($"explode{name}")
                 end)
                 toggle(trolall, "[Shortcut] Force Cam Forward", {}, "Can also disable a player's invulnerability under some circumstances.", function()
-                    commands("confuse"..name)
+                    coms($"confuse{name}")
                 end)
         -- End
 
