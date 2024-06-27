@@ -2,6 +2,12 @@
 # Changelogs :
 (Note that minor updates such as v0**.X** won't be written in Changelogs, unless it's something major.)
 
+## v1.7.2 - Released on 27/06/2024
+- Added Players > PlyName > Kick > Kick with Reason
+  - Kicks the player with whatever you want + sends a message in chat that is like this :
+    - {Player} got kicked via {KickType, i.g. Love Letter} for {reason}.
+- Improvements
+
 ## v1.6 - Released on 22/06/2024
 - Added Euphoria > Self > Recovery
   - Currently has a money loop revolving around bounties.
