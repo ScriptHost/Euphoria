@@ -7,7 +7,7 @@
 - Fixed some commands such as "modcheck" referring the player as {name} instead of their actual name.
 - Other improvements and bug fixes
 
-- Note that some "new" features in this version won't work as they are being worked out.
+- Note that some "new" features in this version won't work as they are being worked on.
 
 ## v1.7.2 - Released on 27/06/2024
 - Added Players > PlyName > Kick > Kick with Reason
