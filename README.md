@@ -3,6 +3,7 @@
 
 ## v1.7.3 - Released on 30/06/2024
 - Removed Euphoria > Miscs > Gun Van cuz it doesnt work
+  - also cuz i didn't make it, credits to Ji9saw for it
 - Fixed RP Loop.
 - Fixed some commands such as "modcheck" referring the player as {name} instead of their actual name.
 - Other improvements and bug fixes
