@@ -1,6 +1,7 @@
 -- Natives
     util.require_natives("3095a", "g")
     util.require_natives("1672190175")
+    local json = require("json")
 -- Utilities
     root = menu.my_root()
     hyperlink = menu.hyperlink
@@ -36,15 +37,13 @@
     clickslider = menu.click_slider
     valreplace = menu.add_value_replacement
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.7.2"
+    scriptver = "v1.7.3"
 -- Lists
     ethself = root:list("Self", {}, "")
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
     scripthosting = ethmiscs:list("Script Host Options")
     customv1 = root:list("Custom commands", {}, "I luv myself for that idea")
     experiments = ethmiscs:list("Experiments", {}, "")
-    gunvan = ethmiscs:list("Gun Van", {}, "")
-    gvthrow = gunvan:list("Throwables", {}, "Manage the throwables slots instead of weapons")
     ethmmd = ethmiscs:list("Modder Detections")
     credits = root:list("Credits")
     UltBypass = root:list("Ultimate Features")
@@ -58,6 +57,7 @@
     KickPlay5 = list(pall2, "Interior Kicks")
     friendlyalld = divider(refbypath("Players>All Players>Friendly"), "Euphoria", {}, "")
     friendlyall = list(refbypath("Players>All Players>Friendly"), "Friendly", {}, "")
+    trollall = list(refbypath("Players>All Players>Trolling"), "Trolling", {}, "")
 
 -- Self
     -- Recovery
@@ -86,135 +86,6 @@
             local status_natives, natives = pcall(require, "natives-1672190175")
             if not status_natives then error("Could not natives lib. Make sure it is selected under Stand > Lua Scripts > Repository > natives-1672190175") end
 
-        --- Gun Van
-
-            function SetGlobalInt(address, value)
-                memory.write_int(memory.script_global(address), value)
-            end
-
-            function GetGlobalInt(address)
-                return memory.read_int(memory.script_global(address))
-            end
-
-            local Globals = 
-            {
-                Position = 2652572 + 2650, -- Line 3949
-                WeaponSlots = 262145 + 34328, -- Line 34887
-                WeaponDiscount = 262145 + 34339, -- Line 34889
-                ThrowableSlots = 262145 + 34350, -- Line 34903
-                ThrowableDiscount = 262145 + 34354, -- Line 34905
-                ArmourDiscount = 262145 + 34358 -- Line 34917
-            }
-
-            local SelectedSlot = 1
-            local SelectedSlot_Throwables = 1
-            local CurrentPosition = GetGlobalInt(Globals.Position) + 1
-            local DefaultGuns = { GetGlobalInt(Globals.WeaponSlots + 1), GetGlobalInt(Globals.WeaponSlots + 2), GetGlobalInt(Globals.WeaponSlots + 3), GetGlobalInt(Globals.WeaponSlots + 4), GetGlobalInt(Globals.WeaponSlots + 5), GetGlobalInt(Globals.WeaponSlots + 6), GetGlobalInt(Globals.WeaponSlots + 7), GetGlobalInt(Globals.WeaponSlots + 8), GetGlobalInt(Globals.WeaponSlots + 9), GetGlobalInt(Globals.WeaponSlots + 10)  }
-            local DefaultThrowables = { GetGlobalInt(Globals.ThrowableSlots + 1), GetGlobalInt(Globals.ThrowableSlots + 2) }
-            local GunVanCoords = { {-29.532, 6435.136, 31.162}, 
-                {1705.214, 4819.167, 41.75}, 
-                {1795.522, 3899.753, 33.869}, 
-                {1335.536, 2758.746, 51.099}, 
-                {795.583, 1210.78, 338.962}, 
-                {-3192.67, 1077.205, 20.594}, 
-                {-789.719, 5400.921, 33.915}, 
-                {-24.384, 3048.167, 40.703}, 
-                {2666.786, 1469.324, 24.237}, 
-                {-1454.966, 2667.503, 3.2}, 
-                {2340.418, 3054.188, 47.888}, 
-                {1509.183, -2146.795, 76.853}, 
-                {1137.404, -1358.654, 34.322}, 
-                {-57.208, -2658.793, 5.737}, 
-                {1905.017, 565.222, 175.558}, 
-                {974.484, -1718.798, 30.296}, 
-                {779.077, -3266.297, 5.719}, 
-                {-587.728, -1637.208, 19.611}, 
-                {733.99, -736.803, 26.165}, 
-                {-1694.632, -454.082, 40.712}, 
-                {-1330.726, -1163.948, 4.313}, 
-                {-496.618, 40.231, 52.316}, 
-                {275.527, 66.509, 94.108}, 
-                {260.928, -763.35, 30.559}, 
-                {-478.025, -741.45, 30.299}, 
-                {894.94, 3603.911, 32.56}, 
-                {-2166.511, 4289.503, 48.733}, 
-                {1465.633, 6553.67, 13.771},
-                {1101.032, -335.172, 66.944},
-                {149.683, -1655.674, 29.028} 
-            }
-
-            gunvan:click_slider("1. Choose Gun Van Slot", {}, "Choose the gun van slot to modify from 1-10", 1, 10, 1, 1, function(SlotID) -- The slot ID needs to have an extra 1, the array is actually 0-9 but GTA is dumb
-                SelectedSlot = SlotID
-                toast("slot #" .. SelectedSlot .. " selected, proceed to step 2.")
-            end)
-
-            gunvan:text_input("2. Modify Gun Van Slot", {'SetGVSlot '}, "Set the gunvan slot to the weapon hash \nFound at: https://wiki.rage.mp/index.php?title=Weapons", function(Input)
-                SetGlobalInt(Globals.WeaponSlots + SelectedSlot, joaat(Input))
-                toast("This weapon is now in the gun van in slot #" .. SelectedSlot .. ".")
-            end)
-
-            gunvan:action("Gun Van Discount", {}, "Adds a nice 10% discount to all items in the gun van", function() -- 10% is the limit, from my testing it can't go backwards i think
-                SetGlobalInt(Globals.WeaponDiscount, 10) -- Weapons
-                SetGlobalInt(Globals.ThrowableDiscount, 10) -- Throwables 
-                SetGlobalInt(Globals.ArmourDiscount, 10) -- Armour
-            end)
-
-            gunvan:action("Optimal Gun Van Slots", {}, "Adds a few cool weapons like the navy revolver automatically", function()
-                SetGlobalInt(Globals.WeaponSlots + 1, joaat("weapon_navyrevolver"))
-                SetGlobalInt(Globals.WeaponSlots + 2, joaat("weapon_gadgetpistol"))
-                SetGlobalInt(Globals.WeaponSlots + 3, joaat("weapon_stungun_mp"))
-                SetGlobalInt(Globals.WeaponSlots + 4, joaat("weapon_doubleaction"))
-                SetGlobalInt(Globals.WeaponSlots + 5, joaat("weapon_railgunxm3"))
-                SetGlobalInt(Globals.WeaponSlots + 6, joaat("weapon_minigun"))
-                SetGlobalInt(Globals.WeaponSlots + 7, joaat("weapon_heavysniper_mk2"))
-                SetGlobalInt(Globals.WeaponSlots + 8, joaat("weapon_combatmg_mk2"))
-                SetGlobalInt(Globals.WeaponSlots + 9, joaat("weapon_tacticalrifle"))
-                SetGlobalInt(Globals.WeaponSlots + 10, joaat("weapon_specialcarbine_mk2"))
-
-                SetGlobalInt(Globals.ThrowableSlots + 1, joaat("weapon_stickybomb"))
-                SetGlobalInt(Globals.ThrowableSlots + 2, joaat("weapon_molotov"))
-                SetGlobalInt(Globals.ThrowableSlots + 3, joaat("weapon_pipebomb"))
-
-                toast("Better weapons are now in the gun van")
-            end)
-
-            gunvan:action("Teleport To Gun Van", {}, "Teleports you to the gun van", function()
-                if not GunVanCoords[CurrentPosition] then
-                    toast("This event is currently innactive")
-                else 
-                    Coord = GunVanCoords[CurrentPosition]
-                    players.teleport_3d(players.user(), Coord[1], Coord[2], Coord[3])
-                end
-            end)
-
-            gunvan:click_slider("Set Gun Van Position", {}, "Choose the gun van position", 1, 30, CurrentPosition, 1, function(PositionID)
-                CurrentPosition = PositionID
-                SetGlobalInt(Globals.Position, CurrentPosition - 1)
-                toast("The Gun Van has been moved.")
-            end)
-
-            gunvan:action("Reset Gun Van Slots", {}, "Returns the weapons inside the gun van to the originals (when the script was started)", function()
-                for SlotID = 1, 10 do
-                    SetGlobalInt(Globals.WeaponSlots + SlotID, DefaultGuns[SlotID])
-                end
-
-                for SlotID = 1, 2 do
-                    SetGlobalInt(Globals.ThrowableSlots + SlotID, DefaultThrowables[SlotID])
-                end
-
-                toast("The Gun Van has been restored.")
-            end)
-
-            gvthrow:click_slider("1. Choose Gun Van Slot", {}, "Choose the gun van slot to modify from 1-3", 1, 3, 1, 1, function(SlotID) -- The slot ID needs to have an extra 1, the array is actually 0-9 but GTA is dumb
-                SelectedSlot_Throwables = SlotID
-                toast("slot #" .. SelectedSlot_Throwables .. " selected, proceed to step 2.")
-            end)
-
-            gvthrow:text_input("2. Modify Gun Van Slot", {'SetGVSlot2 '}, "Set the gunvan slot to the weapon hash \nFound at: https://wiki.rage.mp/index.php?title=Weapons", function(Input)
-                SetGlobalInt(Globals.ThrowableSlots + SelectedSlot_Throwables, util.joaat(Input))
-
-                toast("This weapon is now in the gun van in slot #" .. SelectedSlot_Throwables .. ".")
-            end)
     -- Run at start of script
      -- Notification
         async_http.init("https://raw.githubusercontent.com/ScriptHost/Euphoria/main/ver.txt", nil, function(data)
@@ -387,45 +258,41 @@
 
     ---------------- Kick All
 
-        local function AnnoyHostKick(playerID)
-            local pid = playerID
-            local pnamepid = players.get_name(playerID)
-            if user != host() then
-                selectedplayer = {}
-                for b = 0, 31 do
-                selectedplayer[b] = false
-                end
-
-                for pid = 0, 31 do
-                    if pid ~= user and pid ~= host() and not selectedplayer[pid] and exists(pid) then
-                        coms("nonhostkick{pnamepid}")
-                        yield()
-                    end
-                end
-            else
-                toast("Useless to use this command while your the host")
+    local function AnnoyHostKick(playerID)
+        if players.user() != players.get_host() then
+            selectedplayer = {}
+            for b = 0, 31 do
+            selectedplayer[b] = false
             end
-        end
 
-        local function k4(playerID)
-            local pid = playerID
-            pnamepid = players.get_name(playerID)
-            if user then
-                selectedplayer = {}
-                for b = 0, 31 do
-                selectedplayer[b] = false
+            for playerID = 0, 31 do
+                if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
+                    coms("nonhostkick "..players.get_name(playerID))
+                    yield()
                 end
-
-                for pid = 0, 31 do
-                    if pid ~= user and pid ~= host() and not selectedplayer[pid] and exists(pid) then
-                        coms($"loveletterkick{pnamepid}")
-                        yield()
-                    end
-                end
-            else
-                toast("Useless to use this command when you're the host")
             end
+        else
+            toast("Useless to use this command while your the host")
         end
+    end
+
+    local function k4(playerID)
+        if players.user() then
+            selectedplayer = {}
+            for b = 0, 31 do
+            selectedplayer[b] = false
+            end
+
+            for playerID = 0, 31 do
+                if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
+                    coms("loveletterkick "..players.get_name(playerID))
+                    yield()
+                end
+            end
+        else
+            toast("Useless to use this command while your the host")
+        end
+    end
 
     ---------------- FRC
         local FRC_scan = memory.scan("8A 05 ? ? ? ? 88 83 BC 00 00 00")
@@ -1076,7 +943,14 @@
     end, nil, nil, COMMANDPERM_FRIENDLY)
 
 
--- Util Player (AKA Crash all n kick all)
+-- Util Player
+
+    action(trollall, "CEO/MC Kick [doesnt work]", {}, "", function()
+        for players.list() as playerID do
+            name = pname(playerID)
+            coms($"ceokick{name}")
+        end
+    end)
 
     action(pall15, "Breakout Non-Host", {"sessbreakoutnonh"}, "", function()
         AnnoyHostKick(playerID)
@@ -1091,8 +965,6 @@
     end)
 
     pall2:action("Boat Skin Crash", {}, "", function()
-        coms("apt72all")
-        yield(15000)
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327) -- mazebank
          spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
          ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
@@ -1261,7 +1133,8 @@
             ponlined = divider(proot, "Euphoria", {}, "")
             ponline = list(proot, "Euphoria", {}, "")
             ponline2 = list(ponline, "Informations in chat", {}, "")
-            ccrash = list(refbyrpath(proot, "Crash"), "Euphoria Crashes", {}, "")
+            ccrash = list(refbyrpath(proot, "Crash"), "Euphoria", {}, "")
+            cccrash = list(ccrash, "Crash with Reason", {}, "")
             trolalldivider = divider(refbyrpath(proot, "Trolling"), "Euphoria", {}, "")
             trolall = list(refbyrpath(proot, "Trolling"), "Euphoria Trolling", {}, "")
             fonlinedivider = divider(refbyrpath(proot, "Friendly"), "Euphoria", {}, "")
@@ -1271,6 +1144,7 @@
             reporting = list(refbyrpath(proot, "Increment Commend/Report Stats"), "Spammers", {}, "")
             antigod = list(ponline, "Anti-God", {}, "")
             kick = list(refbyrpath(proot, "Kick"), "Kick With Reason", {}, "")
+            weapons = list(refbyrpath(proot, "Weapons"), "Loops", {}, "")
         -- Individual RP Loop
 
             local levelPly = 120
@@ -1284,27 +1158,27 @@
             end)
 
             local rpLoopPlyr
-            rpLoopPlyr = fonlinerpl:toggle_loop("Enable Loop", {"rploop"}, $"Enables RP Loop on {name}", function()
-                if not proot:isValid() then return end
-                local giveRP = refbyrpath(proot, "Friendly>Give RP")
-                if rank(playerID) >= levelPly then 
-                    toast($"{name} is already at or above level {levelPly}. :)")
+            rpLoopPlyr = fonlinerpl:toggle_loop("Enable Loop", {"rploop"}, $"Enables RP Loop on {players.get_name(playerID)}", function()
+                if not menu.player_root(playerID):isValid() then return end
+                local giveRP = menu.ref_by_rel_path(menu.player_root(playerID), "Friendly>Give RP")
+                if players.get_rank(playerID) >= levelPly then 
+                    toast($"{players.get_name(playerID)} is already at or above level {levelPly}. :)")
                     rpLoopPlyr.value = false
                     return 
                 end
                 repeat
                     for i = 21, 24 do
-                        if rank(playerID) >= levelPly then break end
-                        trigse(1 << playerID, {968269233, players.user(), 4, i, 1, 1, 1})
-                        trigse(1 << playerID, {968269233, players.user(), 8, -1, 1, 1, 1})
+                        if players.get_rank(playerID) >= levelPly then break end
+                        util.trigger_script_event(1 << playerID, {968269233, players.user(), 4, i, 1, 1, 1})
+                        util.trigger_script_event(1 << playerID, {968269233, players.user(), 8, -1, 1, 1, 1})
                         giveRP:trigger()
                         if delayPly > 0 then
                             yield(delayPly)
                         end
                     end
                     yield()
-                until rank(playerID) >= levelPly or not rpLoopPlyr.value
-                if rank(playerID) >= levelPly then 
+                until players.get_rank(playerID) >= levelPly or not rpLoopPlyr.value
+                if players.get_rank(playerID) >= levelPly then 
                     toast($"{players.get_name(playerID)} is now at level {levelPly}. :)")
                     rpLoopPlyr.value = false
                     yield()
@@ -1343,6 +1217,24 @@
                 local hfdelay = 10000
                 slider(highfive, "Kick / Crash Delay", {}, "For Highfive V2 and Highfive V3.", 0, 60000, 10000, 1000, function(hfdelay2)
                     hfdelay = hfdelay2
+                end)
+
+                action(highfive, "Highfive [Dev]", {"highfivedev"}, "Leaks IP, location and other stuff.", function()
+                    if vpn or ISP == "Proton AG" then
+                        yield(1000)
+                        msg($"{name} is using a VPN. Their ISP is {ISP}", false, true, true)
+                    else
+                        yield(1000)
+                        msg($"{name}'s Relay IP is {RelIP}:{RelPort}, his Lan IP is {LanIP} and his IP is {IP}:{IPP}", false, true, true)
+                        yield(200)
+                        msg($"{name}'s RID is {RID}, their game language is {gamelang}, he lives at {Country}, {Region}, {City}.", false, true, true)
+                        yield(20)
+                        if ISP == "Societe Francaise Du Radiotelephone - SFR SA" then
+                            msg($"{name}'s ISP is SFR", false, true, true)
+                        else
+                            msg($"{name}'s ISP is {ISP}", false, true, true)
+                        end
+                    end
                 end)
 
                 action(highfive, "Highfive", {"highfive"}, "Leaks IP, location and other stuff.", function()
@@ -1422,7 +1314,7 @@
                     if shl then
                         msg("Your dear goddess will always be a modder ;)", false, true, true)
                     else
-                        msg("{name} is a modder.", false, true, true)
+                        msg($"{name} is a modder.", false, true, true)
                     end
                 end
             end, nil, nil, comfriend)
@@ -1735,6 +1627,14 @@
                             valreplace(ktype, 5, "Host [Host Only]")
                             valreplace(ktype, 6, "Non-Host")
                             valreplace(ktype, 7, "Invalid Pickup")
+            -- UwU
+                toggle_loop(weapons, "Ammo Loop", {"ammoloop"}, "", function()
+                    coms($"ammo{name}")
+                end)
+                toggle_loop(weapons, "Parachute Loop", {"paraloop"}, "", function()
+                    coms($"paragive{name}")
+                    yield(5000)
+                end)
 
                         
         -- Anti-Godmode
@@ -1826,6 +1726,10 @@
                 end)
                 toggle(trolall, "[Shortcut] Force Cam Forward", {}, "Can also disable a player's invulnerability under some circumstances.", function()
                     coms($"confuse{name}")
+                end)
+                toggle(trolall, "CEO/MC Kick Loop", {}, "", function()
+                    coms($"ceokick{name}")
+                    yield(5000)
                 end)
         -- End
 
