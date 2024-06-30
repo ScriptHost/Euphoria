@@ -1,6 +1,13 @@
 # Euphoria
 # Changelogs :
-(Note that minor updates such as v0**.X** won't be written in Changelogs, unless it's something major.)
+
+## v1.7.3 - Released on 30/06/2024
+- Removed Euphoria > Miscs > Gun Van cuz it doesnt work
+- Fixed RP Loop.
+- Fixed some commands such as "modcheck" referring the player as {name} instead of their actual name.
+- Other improvements and bug fixes
+
+- Note that some "new" features in this version won't work as they are being worked out.
 
 ## v1.7.2 - Released on 27/06/2024
 - Added Players > PlyName > Kick > Kick with Reason
