@@ -1375,7 +1375,7 @@
         players.add_command_hook(player)
     kr()
 -- Credits
-    credits:hyperlink("Discord", "https://discord.gg/e9n67WfJ8y", "Join the official Euphoria discord.")
+    credits:hyperlink("Discord", "https://discord.gg/3s8WzNuapM", "Join the official Euphoria discord.")
     credits:divider("Credits", "", function()
     end)
     credits:action("Akolpa", {}, "", function()
