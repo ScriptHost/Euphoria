@@ -37,7 +37,7 @@
     clickslider = menu.click_slider
     valreplace = menu.add_value_replacement
     userhosttoken = getvaluee(refbyrpath(userproot, "Information>Host Token"))
-    scriptver = "v1.7.3"
+    scriptver = "v1.8"
 -- Lists
     ethself = root:list("Self", {}, "")
     ethmiscs = root:list("Miscs", {}, "Others & Credits")
@@ -50,14 +50,8 @@
     spammer = UltBypass:list("Spammer")
     
 -- Other Lists
-    pall1 = list(refbypath("Players>All Players"), "Kick", {}, "")
-    pall15 = list(pall1, "Kicks", {}, "")
-    pall2 = list(refbypath("Players>All Players"), "Crash", {}, "")
-    soundsList = pall2:list("Crash - Sound Method")
-    KickPlay5 = list(pall2, "Interior Kicks")
-    friendlyalld = divider(refbypath("Players>All Players>Friendly"), "Euphoria", {}, "")
-    friendlyall = list(refbypath("Players>All Players>Friendly"), "Friendly", {}, "")
-    trollall = list(refbypath("Players>All Players>Trolling"), "Trolling", {}, "")
+    friendlyalld = divider(refbypath("Players>All Players>Friendly"), "Euphoria")
+    friendlyall = list(refbypath("Players>All Players>Friendly"), "Friendly")
 
 -- Self
     -- Recovery
@@ -120,7 +114,6 @@
         end)
         
 -- Other Requirements
-
     ---------------- Modder Detections and adding detections (Yoinked from Jinx)
 
         enum eDamageFlags begin
@@ -256,47 +249,6 @@
             return false
         end
 
-    ---------------- Kick All
-
-    local function AnnoyHostKick(playerID)
-        if players.user() != players.get_host() then
-            selectedplayer = {}
-            for b = 0, 31 do
-            selectedplayer[b] = false
-            end
-
-            for playerID = 0, 31 do
-                if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
-                    coms("nonhostkick "..players.get_name(playerID))
-                    yield()
-                end
-            end
-        else
-            toast("Useless to use this command while your the host")
-        end
-    end
-
-    local function k4(playerID)
-        if players.user() then
-            selectedplayer = {}
-            for b = 0, 31 do
-            selectedplayer[b] = false
-            end
-
-            for playerID = 0, 31 do
-                if playerID ~= players.user() and playerID ~= players.get_host() and not selectedplayer[playerID] and players.exists(playerID) then
-                    coms("loveletterkick "..players.get_name(playerID))
-                    yield()
-                end
-            end
-        else
-            toast("Useless to use this command while your the host")
-        end
-    end
-
-    ---------------- FRC
-        local FRC_scan = memory.scan("8A 05 ? ? ? ? 88 83 BC 00 00 00")
-        local FRC_address = FRC_scan ? memory.rip(FRC_scan + 0x02) : 0
 -- Ultimate Features
  -- Functions
   local function AutoKickHost()
@@ -780,6 +732,14 @@
         yield(250)
     end)
 
+    ethmmd:toggle_loop("Voice Chat", {}, "Detects who is talking in game chat.", function()
+        for players.list_except() as playerID do
+            if NETWORK_IS_PLAYER_TALKING(playerID) then
+                draw_debug_text($"{players.get_name(playerID)} is talking")
+            end
+        end 
+    end)
+
     ethmmd:toggle_loop("YimMenu User", {}, "Detects people using YimMenu's \"Force Session Host\". This will also detect menus that have skidded from YimMenu such as Ethereal.", function() -- checking silly hardcoded host token cus who tf manually sets theirs to this anyways
         local pid = playerID
         for players.list() as pid do
@@ -943,141 +903,7 @@
     end, nil, nil, COMMANDPERM_FRIENDLY)
 
 
--- Util Player
 
-    action(trollall, "CEO/MC Kick [doesnt work]", {}, "", function()
-        for players.list() as playerID do
-            name = pname(playerID)
-            coms($"ceokick{name}")
-        end
-    end)
-
-    action(pall15, "Breakout Non-Host", {"sessbreakoutnonh"}, "", function()
-        AnnoyHostKick(playerID)
-    end)
-
-    action(pall15, "Breakout (Host Required)", {"sessbreakouth"}, "", function()
-        if user == host() then
-            k4(playerID)
-        else
-            toast("You are not host!")
-        end
-    end)
-
-    pall2:action("Boat Skin Crash", {}, "", function()
-        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327) -- mazebank
-         spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
-         ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
-        for n = 0 , 5 do
-             objhash = joaat("prop_byard_rowboat4")
-             STREAMING.REQUEST_MODEL(objhash)
-             while not STREAMING.HAS_MODEL_LOADED(objhash) do
-              yield()
-            end
-            PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(user, objhash)
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0, 0, 500, false, true, true)
-            WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 100, false)
-            sleep(1000)
-            for i = 0 , 20 do
-                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 144, 1.0)
-                PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
-            end
-            yield(1000)
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-    
-             objhash2 = joaat("prop_byard_rowboat4")
-             STREAMING.REQUEST_MODEL(objhash2)
-            while not STREAMING.HAS_MODEL_LOADED(objhash2) do
-                yield()
-            end
-            PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(user, objhash2)
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0, 0, 500, false, false, true)
-            WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
-            sleep(1000)
-            for i = 0 , 20 do
-                PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
-                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 144, 1.0)
-            end
-            sleep(1000)
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-        end
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-    end)
-
-    pall2:toggle_loop('Auto Sound Crash', {}, '', function ()
-        for players.list_except(true) as playerID do
-            coms("apt72all")
-            local time = (util.current_time_millis() + 2000)
-            while time > util.current_time_millis() do
-                local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(player_id))
-                for i = 1, 10 do
-                    AUDIO.PLAY_SOUND_FROM_COORD(-1, 'Oneshot_Final', pc.x, pc.y, pc.z, 'MP_MISSION_COUNTDOWN_SOUNDSET', 1, 10000, 0)
-                end
-                util.yield_once()
-            end
-        end
-    end)
-
-    action(KickPlay5, "Classic Interior Kick All", {""}, "", function()
-        coms("interiorkickall")
-    end)
-        
-    action(KickPlay5, "TP All : Paleto Garage (Strawberry)", {""}, "", function()
-        coms("apt45all")
-    end)
-
-    action(pall2, "Stop all sounds", {}, "", function ()
-        for i=0,99 do
-        AUDIO.STOP_SOUND(i)
-        util.yield() 
-        end
-    end)
-
--- RP Loop All (Yoinked from Jinx)
-    local rp_loop = friendlyall:list("RP Loop", {}, "Loops RP on everyone in the lobby.")
-    local level = 120
-    rp_loop:slider("Stop At Level...", {"rplobbylvl"}, "", 1, 8000, 120, 1, function(val)
-        level = val
-    end)
-
-    local delay = 5
-    rpLoopAll = rp_loop:slider("Loop Delay", {"lobbydelay"}, 'Note: setting the delay to "Fastest" will cause a fatal error in bigger lobbies and may lead to some issues.', 0, 2500, 5, 5, function(val)
-        delay = val
-    end)
-    valreplace(rpLoopAll, 0, "Fastest (Read Description)")
-    valreplace(rpLoopAll, 5, "Default")
-
-    local function triggerCollectibleLoop(playerID, i)
-        if players.get_rank(playerID) >= level then return end
-        util.trigger_script_event(1 << playerID, {968269233, players.user(), 4, i, 1, 1, 1})
-        util.trigger_script_event(1 << playerID, {968269233, players.user(), 8, -1, 1, 1, 1})
-    end
-
-    local lobbyRPLoop
-    lobbyRPLoop = rp_loop:toggle_loop("Enable Loop", {"lobbyrpl"}, "Enables RP Loop on everyone in the lobby.", function()
-        if not isNetPlayerOk(players.user(), true, true) then
-            lobbyRPLoop.value = false
-            return
-        end
-        for players.list_except(true) as playerID do
-            if not menu.player_root(playerID):isValid() then return end
-            local giveRP = menu.ref_by_rel_path(menu.player_root(playerID), "Friendly>Give RP")
-            if players.is_marked_as_modder(playerID) or players.get_weapon_damage_modifier(playerID) == 1 or not isNetPlayerOk(playerID) or players.get_rank(playerID) >= level then continue end
-            if delay == 0 then
-                for i = 21, 24 do
-                    triggerCollectibleLoop(playerID, i)
-                    giveRP:trigger()
-                end
-            elseif delay == 5 then
-                triggerCollectibleLoop(playerID, math.random(21, 24)) -- limiting the amount of script events sent to prevent a fatal error
-            else
-                for i = 21, 24 do
-                    triggerCollectibleLoop(playerID, i)
-                end
-                yield(delay)
-            end
-        end	
-    end)
 
 -- Player
 
@@ -1741,50 +1567,7 @@
     credits:hyperlink("Discord", "https://discord.gg/e9n67WfJ8y", "Join the official Euphoria discord.")
     credits:divider("Credits", "", function()
     end)
-    credits:action("ScriptHostLocker", {}, "Its me :)", function()
+    credits:action("Akolpa", {}, "", function()
+        toast("Fuck you CatGPT.")
     end)
-    credits:action("Akolpa / AnyaSenpai-Chan", {}, "Used to be the dev of Euphoria, but left.", function()
-    end)
--- Sounds
-
-    kr()
-    require("natives-1640181023")
-
-    SoundAnnoy = {
-        {"Boss_Message_Orange", "GTAO_Boss_Goons_FM_Soundset"},
-        {"Checkpoint_Cash_Hit", "GTAO_FM_Events_Soundset"},
-        {"Oneshot_Final", "MP_MISSION_COUNTDOWN_SOUNDSET"},
-        {"Object_Collect_Player", "GTAO_FM_Events_Soundset"},
-        {"10s", "MP_MISSION_COUNTDOWN_SOUNDSET"},
-        {"5s", "MP_MISSION_COUNTDOWN_SOUNDSET"},
-        {"RANK_UP", "HUD_AWARDS"},
-        {"Bed", "WastedSounds"},
-        {"Fire", "DLC_BTL_Terrobyte_Turret_Sounds"},
-        {"Bomb_Disarmed", "GTAO_Speed_Convoy_Soundset"},
-        {"Arming_Countdown", "GTAO_Speed_Convoy_Soundset"},
-        {"Boss_Blipped", "GTAO_Magnate_Hunt_Boss_SoundSet"},
-        {"Air_Defenses_Disabled", "DLC_sum20_Business_Battle_AC_Sounds"},
-        {"Air_Defences_Activated", "DLC_sum20_Business_Battle_AC_Sounds"},
-    }
-
-    getPlayerPed = PLAYER.GET_PLAYER_PED
-    getEntityCoords = ENTITY.GET_ENTITY_COORDS
-    menuroot = menu.my_root()
-
-    function AudioAnnoyance(Ker_SND, Ker_AUD)
-        for i=0, 31, 1 do
-            Ker_pped = getPlayerPed(i)
-            Ker_pos = getEntityCoords(Ker_pped)
-            AUDIO.PLAY_SOUND_FRONTEND(-1, Ker_SND, Ker_AUD, true)
-            AUDIO.PLAY_SOUND_FROM_COORD(-1, Ker_SND, Ker_pos.x, Ker_pos.y, Ker_pos.z, Ker_AUD, true, 999999999, true)
-        end
-    end
-
-    for i = 1, #SoundAnnoy do
-        menu.action(soundsList, SoundAnnoy[i][1], {}, "", function()
-            local snd, aud
-            snd = tostring(SoundAnnoy[i][1])
-            aud = tostring(SoundAnnoy[i][2])
-            AudioAnnoyance(snd, aud)
-        end)
-    end
+-- End.
