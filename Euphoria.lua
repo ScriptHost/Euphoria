@@ -153,29 +153,6 @@
             return memory.read_int(memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 9))  -- Global_1845263[PLAYER::PLAYER_ID() /*877*/].f_9
         end
 
-        local function godKill(playerID)
-            local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-            local ping = ROUND(NETWORK_GET_AVERAGE_PING(playerID))
-            local timer = (ping > 300) ? (util.current_time_millis() + 5000) : (util.current_time_millis() + 3000)
-            local pPed =  entities.handle_to_pointer(ped)
-            local pedPtr = entities.handle_to_pointer(players.user_ped())
-            yield()
-            yield()
-            repeat
-                trigse(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
-                util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, joaat("weapon_pistol"), 500.0, 0, 0, DF_IsAccurate | DF_IgnorePedFlags | DF_SuppressImpactAudio | DF_IgnoreRemoteDistCheck, 0, 0, 0, 0, 0, 0, 0, 0.0)
-                if util.current_time_millis() > timer then
-                    toast($"{players.get_name(playerID)}'s godmode can not be removed. :/")
-                    timer = util.current_time_millis() + 3000
-                    return
-                end
-                yield()
-            until IS_PED_DEAD_OR_DYING(ped)
-            yield()
-            yield()
-            timer = util.current_time_millis() + 3000
-        end
-
         local function isPlayerInAnyVehicle(playerID)
             local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
             return IS_PED_IN_ANY_VEHICLE(ped) and not IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(playerID)
@@ -237,16 +214,6 @@
         local function isPlayerInInterior(playerID)
             if not isNetPlayerOk(playerID) then return end
             return GET_INTERIOR_GROUP_ID(getPlayerCurrentInterior(playerID)) == 0 and getPlayerCurrentInterior(playerID) != 0 or players.is_in_interior(playerID)
-        end
-            
-        local function isPlayerGodmode(playerID)
-            local pos = players.get_position(playerID)
-            local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-            if isNetPlayerOk(playerID) and (players.is_godmode(playerID) or entities.is_invulnerable(ped)) and not isPlayerInInterior(playerID) and not isPlayerInCutscene(playerID) 
-            and isFreemodeActive(playerID) and not players.is_using_rc_vehicle(playerID) and not isPlayerRidingRollerCoaster(playerID) and pos.z > 0.0 then
-                return true
-            end
-            return false
         end
 
 -- Ultimate Features
@@ -782,10 +749,6 @@
         end
     end)
 
-    ethmiscs:toggle("im_too_strong's Force Relay Connection", {"efrc"}, "", function(state)
-        memory.write_byte(FRC_address, state ? 1 : 0)
-    end)
-
     toggle(ethmiscs, "Ghost Mode", {"aghostmode", "adminmode"}, "", function(on)
         if on then
             coms("otr on; hidefromplayerlist on; invisibility on")
@@ -893,9 +856,7 @@
 
     action(customv1, "credits", {"credits"}, "", function()
         yield(500)
-        msg("ScriptHostLocker ; Euphoria's Current Dev", false, true, true)
-        yield(500)
-        msg("Akolpa / AnyaSenpai ; OG Euphoria Dev", false, true, true)
+        msg("Akolpa / AnyaSenpai ; Euphoria Dev", false, true, true)
         yield(500)
         msg("Sainan ; Stand Dev, without her, this script wouldnt exist!", false, true, true)
         yield(500)
@@ -968,7 +929,6 @@
             fonlinerpl = list(fonline, "RP Loop", {}, "")
             reportingdivider = divider(refbyrpath(proot, "Increment Commend/Report Stats"), "Euphoria", {}, "")
             reporting = list(refbyrpath(proot, "Increment Commend/Report Stats"), "Spammers", {}, "")
-            antigod = list(ponline, "Anti-God", {}, "")
             kick = list(refbyrpath(proot, "Kick"), "Kick With Reason", {}, "")
             weapons = list(refbyrpath(proot, "Weapons"), "Loops", {}, "")
         -- Individual RP Loop
@@ -1037,74 +997,6 @@
                 msg($"{name}'s country is {Country} and their game language is {gamelang}", false, true, true)
             end)
 
-            -- Highfives
-                highfive = list(ponline2, "Highfives", {}, "")
-
-                local hfdelay = 10000
-                slider(highfive, "Kick / Crash Delay", {}, "For Highfive V2 and Highfive V3.", 0, 60000, 10000, 1000, function(hfdelay2)
-                    hfdelay = hfdelay2
-                end)
-
-                action(highfive, "Highfive [Dev]", {"highfivedev"}, "Leaks IP, location and other stuff.", function()
-                    if vpn or ISP == "Proton AG" then
-                        yield(1000)
-                        msg($"{name} is using a VPN. Their ISP is {ISP}", false, true, true)
-                    else
-                        yield(1000)
-                        msg($"{name}'s Relay IP is {RelIP}:{RelPort}, his Lan IP is {LanIP} and his IP is {IP}:{IPP}", false, true, true)
-                        yield(200)
-                        msg($"{name}'s RID is {RID}, their game language is {gamelang}, he lives at {Country}, {Region}, {City}.", false, true, true)
-                        yield(20)
-                        if ISP == "Societe Francaise Du Radiotelephone - SFR SA" then
-                            msg($"{name}'s ISP is SFR", false, true, true)
-                        else
-                            msg($"{name}'s ISP is {ISP}", false, true, true)
-                        end
-                    end
-                end)
-
-                action(highfive, "Highfive", {"highfive"}, "Leaks IP, location and other stuff.", function()
-                    if shl then
-                        yield(200)
-                        msg("Sorry but you cannot use that command on Euphoria Staff!", false, true, true)
-                    else
-                        if vpn or ISP == "Proton AG" then
-                            yield(1000)
-                            msg($"{name} is using a VPN. Their ISP is {ISP}", false, true, true)
-                        else
-                            yield(1000)
-                            msg($"{name}'s Relay IP is {RelIP}:{RelPort}, his Lan IP is {LanIP} and his IP is {IP}:{IPP}", false, true, true)
-                            yield(200)
-                            msg($"{name}'s RID is {RID}, their game language is {gamelang}, he lives at {Country}, {Region}, {City}.", false, true, true)
-                            yield(20)
-                        end
-                    end
-                end, nil, nil, comtox)
-
-                action(highfive, "Highfive V2", {"highfivev2"}, "Leaks IP, location and other stuff with a kick at the end.", function()
-                    if shl then
-                        msg("Sorry but you cannot use that command on the developer!", false, true, true)
-                    else
-                        commands($"highfive{name}")
-                        yield(hfdelay2)
-                        if user == host then
-                            commands($"loveletter{name}")
-                        else
-                            commands($"kick{name}")
-                        end
-                    end
-                end, nil, nil, comtox)
-
-                action(highfive, "Highfive V3", {"highfivev3"}, "Leaks IP, location and other stuff with a crash at the end.", function()
-                    if shl then
-                        msg("Sorry but you cannot use that command on the developer.", false, true, true)
-                    else
-                        commands($"highfive{name}")
-                        yield(hfdelay2)
-                        commands($"ultimatecrash{name}")
-                    end
-                end, nil, nil, comtox)
-            
             action(ponline2, "Send Money in chat", {"money"}, "Sends the players money in chat", function()
                 yield(500)
                 msg($"{name} has {Cash}$ in their wallet, {Bank}$ in their bank, totaling {Total}$.", false, true, true)
@@ -1461,87 +1353,6 @@
                     coms($"paragive{name}")
                     yield(5000)
                 end)
-
-                        
-        -- Anti-Godmode
-
-            local isGodmodeRemovable = {}
-
-            antigod:toggle_loop("Remove Player Godmode", {}, lang.get_localised(-748077967), function()
-                trigse(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
-            end)
-
-            antigod:action("Orbital Strike", {"orbgod"}, lang.get_localised(-748077967), function()
-                local timer = util.current_time_millis() + 3500
-                local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-                local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-                if IS_PLAYER_DEAD(playerID) then return end
-                if IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(playerID)then
-                    toast($"{name}'s ped has not been cloned yet. :/")
-                    return
-                end
-
-                if not isPlayerGodmode(playerID) then 
-                    toast($"{name} is not in godmode or is using anti-detections. :/")
-                    return 
-                end
-                
-                repeat
-                    toast("Removing Godmode...")
-                    if util.current_time_millis() > timer then
-                        toast($"Failed to remove {name}'s godmode. :/")
-                        return
-                    end
-                    trigse(1 << pid, {800157557, players.user(), 225624744, math.random(0, 9999)})
-                    yield()
-                until not players.is_godmode(pid)
-                isGodmodeRemovable[pid] = true
-
-                if isGodmodeRemovable[pid] then
-                    toast("Orbital Striking Player...")
-                    if isPlayerInAnyVehicle(pid) and entities.is_invulnerable(vehicle) then
-                        entities.request_control(vehicle, 2500)
-                        SET_ENTITY_CAN_BE_DAMAGED(vehicle, true)
-                        SET_ENTITY_INVINCIBLE(vehicle, false)
-                        SET_ENTITY_PROOFS(vehicle, false, false, false, false, false, false, false, false)
-                    end
-
-                    setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
-                    yield(500) -- yielding so their game realizes I'm using the orb
-                    local pos = players.get_position(pid)
-                    ADD_OWNED_EXPLOSION(players.user_ped(), pos, 59, 1.0, true, false, 1.0)
-                    USE_PARTICLE_FX_ASSET("scr_xm_orbital")
-                    START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", pos, v3(), 1.0, false, false, false, true)
-                    PLAY_SOUND_FROM_COORD(0, "DLC_XM_Explosions_Orbital_Cannon", pos, 0, true, 0, false) -- hardcoding sound id because GET_SOUND_ID doesnt work sometimes
-                    godKill(pid)
-                    yield(1000) -- yielding here isnt needed but it gives yourself the notification that you orbed them
-                    clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
-                    yield(3000)
-                    STOP_SOUND(0)
-                    isGodmodeRemovable[pid] = false
-                end
-            end)
-
-            antigod:action("Teleport To Death Barrier", {}, "", function()
-                players.teleport_3d(pid, -1141.5363, -2164.0615, 26.823051)
-            end)
-
-            antigod:toggle_loop("Remove Vehicle Godmode", {}, lang.get_localised(-748077967), function()
-                local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-                if not IS_PED_IN_ANY_VEHICLE(ped) then
-                    toast(lang.get_localised(PLYNVEH):gsub("{}", players.get_name(pid)))
-                    glitchveh.value = false
-                    util.stop_thread()
-                end
-                local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-                entities.request_control(vehicle, 2500)
-                if IS_PED_IN_ANY_VEHICLE(ped) and not IS_PLAYER_DEAD(ped) then
-                    SET_ENTITY_CAN_BE_DAMAGED(vehicle, true)
-                    SET_ENTITY_INVINCIBLE(vehicle, false)
-                    SET_ENTITY_PROOFS(vehicle, false, false, false, false, false, false, false, false)
-                end
-            end)
-
         -- Trolls
                 toggle_loop(trolall, "Kill Loop", {"killloop"}, "Loops the 'Kill' option.", function()
                     yield(1000)
