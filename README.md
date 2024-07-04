@@ -1,20 +1,30 @@
 # Euphoria
+
 # Changelogs :
+
+Euphoria will no longer receive updates for now.
+Thanks for the non-existing support.
+Latest public release : v1.8b
+
+## v1.8b - Released on 04/07/2024
+- Removed the toggle_loop for im_too_strong's Force Relay as the code was removed.
 
 ## v1.8 - Released on 01/07/2024
 - Removed All Players > Kick & Crash
 - Removed RP Loop
+  - Credits to Prisuhm
 - Removed Anti-Godmode
-  - Half worked
+  - Half worked and credits to Prisuhm once again
 - Removed Highfives
-  - Moved towards the dev edition only.
-- Added Voice Chat Detection (shameless skid from Jinx)
+  - Obvious reason for removal.
+- Added Voice Chat Detection
 - Edited Credits
 
 [Edit]
 
 - Changed Discord Link to be updated
   - Report bugs there ;)
+    - They won't be fixed, on the 4th July 2024, Euphoria is now buried in the dirt.
 
 ## v1.7.3 - Released on 30/06/2024
 - Removed Euphoria > Miscs > Gun Van cuz it doesnt work
