@@ -4,10 +4,11 @@
 
 Euphoria will no longer receive updates for now.
 Thanks for the non-existing support.
-Latest public release : v1.8b
+Latest Release : v1.8b
 
 ## v1.8b - Released on 04/07/2024
-- Removed the toggle_loop for im_too_strong's Force Relay as the code was removed.
+- Welp, nevermind, it's already removed.
+- Euphoria is now no longer supported.
 
 ## v1.8 - Released on 01/07/2024
 - Removed All Players > Kick & Crash
