@@ -86,6 +86,7 @@
             util.show_corner_help($"Welcome {stdusername} !\nCurrent Euphoria Version : {scriptver}\nLatest Euphoria Version : "..data:split(":")[2])
         end)
         async_http.dispatch()
+        toast($"Hi {stdusername} !\nJust letting you know that Euphoria isn't updated anymore, please stop using it :)")
     -- Auto-Updater (Yes, its back on GitHub, fuck you all.)
         local uwu = {
             auto_update_check_interval = 69420,
